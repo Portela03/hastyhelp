@@ -1,19 +1,31 @@
 import { useState } from 'react'
 import type { ReactNode } from 'react'
-import { NavLink } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
+import { useStore } from '../store'
 import blob1 from '../assets/figma/bg-blob-1.svg'
 import blob2 from '../assets/figma/bg-blob-2.svg'
 import chevron from '../assets/figma/chevron-down.svg'
 import notification from '../assets/figma/notification.svg'
 import { Avatar, Icon, cx } from './ui'
 
-const NAV = [
+const NAV_PROFESSOR = [
   { to: '/equipes', label: 'Equipes', icon: 'groups' },
   { to: '/avaliacoes', label: 'Avaliações', icon: 'assignment' },
   { to: '/metricas', label: 'Métricas', icon: 'bar_chart' },
 ]
 
+const NAV_ALUNO = [
+  { to: '/aluno/turmas', label: 'Turmas', icon: 'groups' },
+  { to: '/aluno/autoavaliacoes', label: 'Autoavaliações', icon: 'assignment' },
+  { to: '/aluno/desempenho', label: 'Desempenho', icon: 'bar_chart' },
+]
+
 function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
+  const { sessao, sair } = useStore()
+  const navigate = useNavigate()
+  const aluno = sessao?.papel === 'aluno'
+  const NAV = aluno ? NAV_ALUNO : NAV_PROFESSOR
+  const nome = sessao?.nome ?? 'Alberto'
   return (
     <aside className="flex h-full w-[220px] shrink-0 flex-col justify-between border-r border-sidebar-line bg-sidebar px-4 py-6 shadow-[1px_0_1.8px_rgba(0,0,0,0.2)]">
       <nav aria-label="Navegação principal" className="flex flex-col gap-2.5">
@@ -42,20 +54,72 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
       </nav>
       <div className="flex flex-col gap-3">
         <div className="h-px bg-sidebar-active" />
-        <div className="flex items-center gap-3 rounded-[14px] border border-sidebar-line bg-btn-brown px-3 py-2.5 drop-shadow-[0_2px_3px_rgba(0,0,0,0.06)]">
-          <Avatar letra="A" />
+        <button
+          type="button"
+          title="Sair"
+          aria-label={`Sair (${nome})`}
+          onClick={() => {
+            sair()
+            navigate('/login')
+          }}
+          className="flex cursor-pointer items-center gap-3 rounded-[14px] border border-sidebar-line bg-btn-brown px-3 py-2.5 text-left drop-shadow-[0_2px_3px_rgba(0,0,0,0.06)]"
+        >
+          <Avatar letra={nome[0]} cor={aluno ? '#a67b5b' : undefined} />
           <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-            <p className="text-[15px] font-semibold text-ink">Alberto</p>
-            <p className="text-[12px] text-muted">Professor</p>
+            <p className="truncate text-[15px] font-semibold text-ink">{nome}</p>
+            <p className="text-[12px] text-muted">{aluno ? 'Aluno' : 'Professor'}</p>
           </div>
           <Icon name="chevron_right" round={false} className="text-[18px] text-muted" />
-        </div>
+        </button>
       </div>
     </aside>
   )
 }
 
-export function AppShell({ children, action, onMore }: { children: ReactNode; action?: ReactNode; onMore?: () => void }) {
+const ESTILO_VOLTAR =
+  'flex items-center gap-2 rounded-xl bg-sidebar-active px-3 py-1.5 text-[16px] font-semibold text-white'
+
+/**
+ * Botão de voltar no estilo da aba ativa do menu.
+ * Com `para`, leva à página-mãe; sem `para`, volta no histórico do navegador
+ * (e fica desabilitado quando não há para onde voltar).
+ */
+export function BotaoVoltar({ para, rotulo, className }: { para?: string; rotulo?: string; className?: string }) {
+  const navigate = useNavigate()
+  if (para) {
+    return (
+      <Link to={para} aria-label={`Voltar para ${rotulo ?? 'a página anterior'}`} className={cx(ESTILO_VOLTAR, className)}>
+        <Icon name="arrow_back" className="text-[20px]" />
+        Voltar
+      </Link>
+    )
+  }
+  const semHistorico = (window.history.state?.idx ?? 0) === 0
+  return (
+    <button
+      type="button"
+      aria-label="Voltar para a página anterior"
+      disabled={semHistorico}
+      onClick={() => navigate(-1)}
+      className={cx(ESTILO_VOLTAR, 'cursor-pointer disabled:cursor-not-allowed disabled:opacity-50', className)}
+    >
+      <Icon name="arrow_back" className="text-[20px]" />
+      Voltar
+    </button>
+  )
+}
+
+export function AppShell({
+  children,
+  action,
+  onMore,
+  voltar,
+}: {
+  children: ReactNode
+  action?: ReactNode
+  onMore?: () => void
+  voltar?: { para: string; rotulo: string }
+}) {
   const [aberto, setAberto] = useState(false)
   return (
     <div className="flex min-h-screen bg-page">
@@ -72,14 +136,17 @@ export function AppShell({ children, action, onMore }: { children: ReactNode; ac
       )}
       <div className="flex min-w-0 flex-1 flex-col gap-6 pb-6">
         <header className="flex h-[54px] shrink-0 items-center justify-between border-b border-line bg-topbar px-4 lg:px-6">
-          <button
-            type="button"
-            aria-label="Abrir menu"
-            onClick={() => setAberto(true)}
-            className="flex cursor-pointer text-[24px] text-ink lg:invisible"
-          >
-            <Icon name="menu" />
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              aria-label="Abrir menu"
+              onClick={() => setAberto(true)}
+              className="flex cursor-pointer text-[24px] text-ink lg:hidden"
+            >
+              <Icon name="menu" />
+            </button>
+            <BotaoVoltar para={voltar?.para} rotulo={voltar?.rotulo} />
+          </div>
           <div className="flex items-center gap-4">
             <button type="button" aria-label="Notificações" className="size-9 cursor-pointer">
               <img src={notification} alt="" className="size-full" />

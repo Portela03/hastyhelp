@@ -34,7 +34,7 @@ Toda tela nova (inclusive as do aluno) usa os tokens e componentes já existente
 
 - MCP do Figma configurado em `.mcp.json` (autenticar com `/mcp`).
 - Spec completo das telas, tokens, rotas e node IDs: [`docs/SPEC-TELAS.md`](docs/SPEC-TELAS.md).
-- Arquivo: `6C4VTzYwxrg2DpZvmoMRtT`, frame `546:6577`. O Figma cobre apenas as telas do **professor** e o login/cadastro; as telas do **aluno** (N01–N06) ainda não têm design: propor seguindo os mesmos tokens e confirmar antes de fechar.
+- Arquivo: `6C4VTzYwxrg2DpZvmoMRtT`, frame `546:6577`. O Figma cobre apenas as telas do **professor** e o login/cadastro; as telas do **aluno** (N01–N06) não têm design: foram montadas com o design system (ver seção 5 de `docs/DESIGN-SYSTEM.md`) e precisam de validação.
 - Ao implementar uma tela: `get_design_context` com screenshot, baixar assets para `src/assets/` (nunca deixar URL temporária do Figma no código) e adaptar às convenções deste projeto.
 
 ## Domínio (necessidades e requisitos)
