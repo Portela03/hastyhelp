@@ -23,6 +23,13 @@ npm run test:run     # vitest uma vez (CI)
 npm run test:e2e     # playwright test
 ```
 
+## Design System (obrigatório)
+
+Toda tela nova (inclusive as do aluno) usa os tokens e componentes já existentes. **Leia [`docs/DESIGN-SYSTEM.md`](docs/DESIGN-SYSTEM.md) antes de criar ou alterar qualquer UI**; a página viva fica em `/design-system`.
+
+- Componentes: `src/components/ui.tsx`, `layout.tsx`, `modals.tsx`. Tokens: `@theme` em `src/index.css`.
+- Não escreva hex solto nem crie um segundo shell/botão/campo: reutilize; se faltar algo, crie o token/componente, documente no design system e mostre em `/design-system`.
+
 ## Design (Figma)
 
 - MCP do Figma configurado em `.mcp.json` (autenticar com `/mcp`).
