@@ -2,16 +2,18 @@ import { useState } from 'react'
 import type { FormEvent, ReactNode } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import bg from '../assets/figma/login-bg.png'
+import { BotaoVoltar } from '../components/layout'
 import { Field, PasswordField, cx } from '../components/ui'
 import { CONVITES, TURMAS_ALUNO } from '../data/aluno'
 import type { Papel } from '../data/aluno'
 import { useStore } from '../store'
 
-function AuthLayout({ titulo, children }: { titulo: string; children: ReactNode }) {
+function AuthLayout({ titulo, children, voltarPara }: { titulo: string; children: ReactNode; voltarPara?: string }) {
   return (
     <div className="relative flex min-h-screen items-center justify-center p-4">
       <img src={bg} alt="" className="pointer-events-none absolute inset-0 size-full object-cover" />
       <div className="absolute inset-0 bg-black/10" />
+      <BotaoVoltar para={voltarPara} rotulo={voltarPara ? 'o login' : undefined} className="absolute left-4 top-4 z-10" />
       <div className="relative flex w-full max-w-[460px] flex-col items-center gap-8 rounded-lg bg-white px-9 py-8">
         <h1 className="w-full text-[40px] font-semibold text-ink">{titulo}</h1>
         {children}
@@ -71,7 +73,7 @@ export function Login() {
   function enviar(e: FormEvent) {
     e.preventDefault()
     entrar(papel)
-    navigate(papel === 'aluno' ? '/aluno/turmas' : '/equipes')
+    navigate(papel === 'aluno' ? '/aluno/turmas' : '/equipes', { replace: true })
   }
 
   return (
@@ -115,7 +117,7 @@ export function Cadastro({ convite }: { convite?: boolean }) {
   }
 
   return (
-    <AuthLayout titulo="Cadastrar">
+    <AuthLayout titulo="Cadastrar" voltarPara="/login">
       {convite && (
         <p
           role="status"

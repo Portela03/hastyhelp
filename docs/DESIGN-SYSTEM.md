@@ -93,7 +93,7 @@ Sidebar fixa **220px** + coluna fluida; topbar **54px**; conteúdo com `gap-5`; 
 ### `src/components/layout.tsx`
 | Componente | Para quê |
 |---|---|
-| `AppShell` | página autenticada: sidebar + topbar + conteúdo. Props: `action` (botão da topbar), `onMore`, `voltar` (`{ para, rotulo }`: mostra o botão **Voltar** no canto esquerdo da topbar, estilo da aba ativa do menu; use em toda página de detalhe, apontando para a página-mãe) |
+| `AppShell` | página autenticada: sidebar + topbar + conteúdo. Props: `action` (botão da topbar), `onMore`, `voltar` (`{ para, rotulo }`: mostra o botão **Voltar** no canto esquerdo da topbar, estilo da aba ativa do menu; `AppShell` mostra o **Voltar** em toda página: com `voltar` leva à página-mãe (use em toda página de detalhe); sem `voltar` volta no histórico do navegador e fica desabilitado se não houver histórico. Fora do shell (Login/Cadastro/Design System) use `BotaoVoltar` de `layout.tsx`) |
 | `Banner` (+ `BannerStat`) | faixa de título da página; `variante="lista"` muda a posição das manchas decorativas; `leading` para sigla/avatar; `children` = métricas à direita |
 | `TabBar` | abas de página (usa rotas; aba ativa branca) |
 | `Toolbar` | barra branca de filtros/ordenação |
@@ -149,5 +149,6 @@ Login escolhe o papel ("Sou professor" / "Sou aluno"); `Protegida` em `App.tsx` 
 - **Ícones**: `text-[Npx]` na classe do `Icon` (aplicado inline, porque o CSS do Google Fonts não usa camadas do Tailwind).
 - **Não** editar textos do Figma que estejam corretos; corrigir acentos ("Móveis", "Domínio") é permitido.
 - **Antes de fechar uma tela**: comparar com o screenshot do Figma (1440×810) e conferir a versão mobile.
+
 
 

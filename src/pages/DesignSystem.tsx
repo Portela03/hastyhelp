@@ -2,7 +2,7 @@ import { useState } from 'react'
 import type { ReactNode } from 'react'
 import { CORES_EQUIPE } from '../data/mock'
 import type { StatusFormulario } from '../data/mock'
-import { Banner, DataTable, Section, Toolbar } from '../components/layout'
+import { Banner, BotaoVoltar, DataTable, Section, Toolbar } from '../components/layout'
 import {
   Avatar,
   ButtonBrown,
@@ -71,6 +71,9 @@ export function DesignSystem() {
 
   return (
     <div className="mx-auto flex max-w-[1100px] flex-col gap-5 p-4 sm:p-10">
+      <div>
+        <BotaoVoltar />
+      </div>
       <Banner titulo="Design System" subtitulo="Tokens e componentes do HastyHelp. Documentação completa em docs/DESIGN-SYSTEM.md." />
 
       <Bloco titulo="Cores">

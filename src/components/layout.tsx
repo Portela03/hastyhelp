@@ -76,17 +76,36 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   )
 }
 
-/** Botão de voltar no estilo da aba ativa do menu; leva sempre à página-mãe. */
-function BotaoVoltar({ para, rotulo }: { para: string; rotulo: string }) {
+const ESTILO_VOLTAR =
+  'flex items-center gap-2 rounded-xl bg-sidebar-active px-3 py-1.5 text-[16px] font-semibold text-white'
+
+/**
+ * Botão de voltar no estilo da aba ativa do menu.
+ * Com `para`, leva à página-mãe; sem `para`, volta no histórico do navegador
+ * (e fica desabilitado quando não há para onde voltar).
+ */
+export function BotaoVoltar({ para, rotulo, className }: { para?: string; rotulo?: string; className?: string }) {
+  const navigate = useNavigate()
+  if (para) {
+    return (
+      <Link to={para} aria-label={`Voltar para ${rotulo ?? 'a página anterior'}`} className={cx(ESTILO_VOLTAR, className)}>
+        <Icon name="arrow_back" className="text-[20px]" />
+        Voltar
+      </Link>
+    )
+  }
+  const semHistorico = (window.history.state?.idx ?? 0) === 0
   return (
-    <Link
-      to={para}
-      aria-label={`Voltar para ${rotulo}`}
-      className="flex items-center gap-2 rounded-xl bg-sidebar-active px-3 py-1.5 text-[16px] font-semibold text-white"
+    <button
+      type="button"
+      aria-label="Voltar para a página anterior"
+      disabled={semHistorico}
+      onClick={() => navigate(-1)}
+      className={cx(ESTILO_VOLTAR, 'cursor-pointer disabled:cursor-not-allowed disabled:opacity-50', className)}
     >
       <Icon name="arrow_back" className="text-[20px]" />
       Voltar
-    </Link>
+    </button>
   )
 }
 
@@ -126,7 +145,7 @@ export function AppShell({
             >
               <Icon name="menu" />
             </button>
-            {voltar && <BotaoVoltar para={voltar.para} rotulo={voltar.rotulo} />}
+            <BotaoVoltar para={voltar?.para} rotulo={voltar?.rotulo} />
           </div>
           <div className="flex items-center gap-4">
             <button type="button" aria-label="Notificações" className="size-9 cursor-pointer">
