@@ -1,4 +1,4 @@
-# HastyHelp — Design System
+﻿# HastyHelp — Design System
 
 Fonte única de verdade visual do projeto. **Toda tela nova (inclusive as do aluno) deve ser montada com estes tokens e componentes**, sem inventar cores, tamanhos ou padrões novos.
 
@@ -115,20 +115,33 @@ Sidebar fixa **220px** + coluna fluida; topbar **54px**; conteúdo com `gap-5`; 
 6. **Estados vazios**: texto `text-muted` 16px simples, sem ilustração.
 7. **Acessibilidade**: `label` em todo campo, foco visível, `aria-*` em barras/abas/modais, alvo de clique ≥ 32px, contraste mínimo AA (texto `muted` só sobre fundo claro).
 
-## 5. Como criar as telas do aluno (guia)
+## 5. Telas do aluno (implementadas)
 
-O aluno **não tem design no Figma** ainda. Enquanto isso, monte com este sistema e valide com o time:
+Mesmo shell e mesmos componentes do professor; muda o **recorte** (menu, dados e ações). Código em `src/pages/Aluno.tsx`, regras em `src/data/aluno.ts`. O aluno **não tem design no Figma**: estas telas são uma proposta montada com o design system e devem ser validadas.
 
-| Tela | Composição sugerida |
-|---|---|
-| Login / cadastro do aluno | reaproveitar `Login`/`Cadastro` (mesmo layout de fundo *low-poly*); papel escolhido no cadastro |
-| Minhas autoavaliações (N02) | `AppShell` (menu do aluno) → `Banner` → `Toolbar` (busca + status) → lista de linhas como `FormRow` (sigla da turma, título, prazo, `StatusPill`: pendente/respondido) |
-| Responder (N03/N04) | `Banner` com o título + `ProgressBar` de progresso; um `Panel` por pergunta (círculo numerado como no detalhe do formulário), opções em rádio/checkbox; `ButtonBrown` "Revisar" |
-| Revisão antes de enviar (N05) | lista das perguntas com a resposta escolhida + `ButtonGhost` "Voltar e editar" e `ButtonBrown` "Enviar" |
-| Histórico e evolução (N06/RF09) | `DataTable` das autoavaliações respondidas + `Panel` com gráfico de colunas de evolução (mesmo do resumo da equipe) |
+| Professor | Aluno | Rota |
+|---|---|---|
+| Equipes | **Turmas** (só as dele; sem criar, sem ocultas) | `/aluno/turmas` |
+| Detalhe da equipe | Detalhe da turma: abas **Autoavaliações** e **Meu resumo** (sem aba Alunos) | `/aluno/turmas/:id` |
+| Formulários | **Autoavaliações** de todas as turmas dele (sem criar) | `/aluno/autoavaliacoes` |
+| Detalhe do formulário | **Responder → Revisar → Enviar**; depois **Minhas respostas** e **Resultado** | `/aluno/autoavaliacoes/:id` |
+| Métricas | **Desempenho** (só dados dele) | `/aluno/desempenho` |
+| Cadastro | Cadastro por **link de convite** | `/convite/:codigo` |
 
-Menu do aluno: mesmas abas de `Sidebar`, com itens **Autoavaliações** e **Histórico** (ícones `assignment`, `history`) e perfil com papel "Aluno".
+Login escolhe o papel ("Sou professor" / "Sou aluno"); `Protegida` em `App.tsx` redireciona quem abrir rota do outro papel. Clicar no cartão de perfil da sidebar faz logout.
 
+**Decisões de produto já tomadas**
+- O aluno entra na turma por **link** ou **convite do professor**. Um usuário tem **um** papel (nunca os dois).
+- O aluno pode estar em **várias turmas/matérias**.
+- **Prazo** é opcional e definido pelo professor (`prazo`).
+- Resposta **enviada não pode ser alterada**; rascunho é salvo automaticamente (`salvarResposta`); só envia com todas as perguntas respondidas (`enviarAutoavaliacao`).
+- O **gabarito** é decisão do professor (`mostrarGabarito`). O aluno **sempre** vê nota, compreensão e evolução.
+- Status do aluno: **Pendente → Em andamento → Respondido**, ou **Encerrado** (prazo passou sem resposta). Visual via `StatusAlunoPill`.
+
+**Em aberto (aguardando o professor da disciplina)**
+- Significado e cálculo de **I / P / C** (hoje aparece só como dado, `compreensao`).
+- Formato da pergunta de **nível de compreensão** (hoje: múltipla escolha com gabarito opcional).
+- Fórmula da nota: hoje `acertos / perguntas com gabarito × 10` (`calcularNota`).
 ## 6. Regras para manter o sistema
 
 - **Tokens, não hex**: nunca escreva `#xxxxxx` em componentes novos — use `bg-*`/`text-*` do tema. Se faltar cor, crie o token em `@theme` e documente aqui.
@@ -136,3 +149,4 @@ Menu do aluno: mesmas abas de `Sidebar`, com itens **Autoavaliações** e **Hist
 - **Ícones**: `text-[Npx]` na classe do `Icon` (aplicado inline, porque o CSS do Google Fonts não usa camadas do Tailwind).
 - **Não** editar textos do Figma que estejam corretos; corrigir acentos ("Móveis", "Domínio") é permitido.
 - **Antes de fechar uma tela**: comparar com o screenshot do Figma (1440×810) e conferir a versão mobile.
+

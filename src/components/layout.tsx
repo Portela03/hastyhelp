@@ -1,19 +1,31 @@
 import { useState } from 'react'
 import type { ReactNode } from 'react'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { useStore } from '../store'
 import blob1 from '../assets/figma/bg-blob-1.svg'
 import blob2 from '../assets/figma/bg-blob-2.svg'
 import chevron from '../assets/figma/chevron-down.svg'
 import notification from '../assets/figma/notification.svg'
 import { Avatar, Icon, cx } from './ui'
 
-const NAV = [
+const NAV_PROFESSOR = [
   { to: '/equipes', label: 'Equipes', icon: 'groups' },
   { to: '/avaliacoes', label: 'Avaliações', icon: 'assignment' },
   { to: '/metricas', label: 'Métricas', icon: 'bar_chart' },
 ]
 
+const NAV_ALUNO = [
+  { to: '/aluno/turmas', label: 'Turmas', icon: 'groups' },
+  { to: '/aluno/autoavaliacoes', label: 'Autoavaliações', icon: 'assignment' },
+  { to: '/aluno/desempenho', label: 'Desempenho', icon: 'bar_chart' },
+]
+
 function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
+  const { sessao, sair } = useStore()
+  const navigate = useNavigate()
+  const aluno = sessao?.papel === 'aluno'
+  const NAV = aluno ? NAV_ALUNO : NAV_PROFESSOR
+  const nome = sessao?.nome ?? 'Alberto'
   return (
     <aside className="flex h-full w-[220px] shrink-0 flex-col justify-between border-r border-sidebar-line bg-sidebar px-4 py-6 shadow-[1px_0_1.8px_rgba(0,0,0,0.2)]">
       <nav aria-label="Navegação principal" className="flex flex-col gap-2.5">
@@ -42,14 +54,23 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
       </nav>
       <div className="flex flex-col gap-3">
         <div className="h-px bg-sidebar-active" />
-        <div className="flex items-center gap-3 rounded-[14px] border border-sidebar-line bg-btn-brown px-3 py-2.5 drop-shadow-[0_2px_3px_rgba(0,0,0,0.06)]">
-          <Avatar letra="A" />
+        <button
+          type="button"
+          title="Sair"
+          aria-label={`Sair (${nome})`}
+          onClick={() => {
+            sair()
+            navigate('/login')
+          }}
+          className="flex cursor-pointer items-center gap-3 rounded-[14px] border border-sidebar-line bg-btn-brown px-3 py-2.5 text-left drop-shadow-[0_2px_3px_rgba(0,0,0,0.06)]"
+        >
+          <Avatar letra={nome[0]} cor={aluno ? '#a67b5b' : undefined} />
           <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-            <p className="text-[15px] font-semibold text-ink">Alberto</p>
-            <p className="text-[12px] text-muted">Professor</p>
+            <p className="truncate text-[15px] font-semibold text-ink">{nome}</p>
+            <p className="text-[12px] text-muted">{aluno ? 'Aluno' : 'Professor'}</p>
           </div>
           <Icon name="chevron_right" round={false} className="text-[18px] text-muted" />
-        </div>
+        </button>
       </div>
     </aside>
   )

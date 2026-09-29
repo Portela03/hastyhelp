@@ -4,6 +4,8 @@ import dotAgendado from '../assets/figma/dot-agendado.svg'
 import dotAtivo from '../assets/figma/dot-ativo.svg'
 import dotInativo from '../assets/figma/dot-inativo.svg'
 import dotRascunho from '../assets/figma/dot-rascunho.svg'
+import { ROTULO_STATUS_ALUNO } from '../data/aluno'
+import type { StatusAluno } from '../data/aluno'
 import type { StatusFormulario } from '../data/mock'
 
 export function cx(...c: Array<string | false | null | undefined>) {
@@ -99,21 +101,45 @@ export function TeamBadge({ sigla, cor, size = 60, fontSize }: { sigla: string; 
 
 /* Status */
 
-const STATUS = {
-  ativo: { label: 'Ativo', dot: dotAtivo, bg: 'bg-[#eaf7ec]', text: 'text-[#2f7a3f]' },
-  agendado: { label: 'Agendado', dot: dotAgendado, bg: 'bg-[#eaf2f7]', text: 'text-[#2f5b7a]' },
-  inativo: { label: 'Inativo', dot: dotInativo, bg: 'bg-black/8', text: 'text-black/46' },
-  rascunho: { label: 'Rascunho', dot: dotRascunho, bg: 'bg-[#f7f5ea]', text: 'text-[#7a712f]' },
+const TONS = {
+  verde: { dot: dotAtivo, bg: 'bg-[#eaf7ec]', text: 'text-[#2f7a3f]' },
+  azul: { dot: dotAgendado, bg: 'bg-[#eaf2f7]', text: 'text-[#2f5b7a]' },
+  cinza: { dot: dotInativo, bg: 'bg-black/8', text: 'text-black/46' },
+  amarelo: { dot: dotRascunho, bg: 'bg-[#f7f5ea]', text: 'text-[#7a712f]' },
 } as const
 
-export function StatusPill({ status }: { status: StatusFormulario }) {
-  const s = STATUS[status]
+type Tom = keyof typeof TONS
+
+export function Pill({ tom, children }: { tom: Tom; children: ReactNode }) {
+  const t = TONS[tom]
   return (
-    <span className={cx('inline-flex items-center gap-2 rounded-full border border-line-input px-2 py-1', s.bg)}>
-      <img src={s.dot} alt="" className="size-2" />
-      <span className={cx('text-[14px] font-semibold', s.text)}>{s.label}</span>
+    <span className={cx('inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-line-input px-2 py-1', t.bg)}>
+      <img src={t.dot} alt="" className="size-2" />
+      <span className={cx('text-[14px] font-semibold', t.text)}>{children}</span>
     </span>
   )
+}
+
+const STATUS: Record<StatusFormulario, { label: string; tom: Tom }> = {
+  ativo: { label: 'Ativo', tom: 'verde' },
+  agendado: { label: 'Agendado', tom: 'azul' },
+  inativo: { label: 'Inativo', tom: 'cinza' },
+  rascunho: { label: 'Rascunho', tom: 'amarelo' },
+}
+
+export function StatusPill({ status }: { status: StatusFormulario }) {
+  return <Pill tom={STATUS[status].tom}>{STATUS[status].label}</Pill>
+}
+
+const STATUS_ALUNO: Record<StatusAluno, Tom> = {
+  pendente: 'amarelo',
+  andamento: 'azul',
+  respondido: 'verde',
+  encerrado: 'cinza',
+}
+
+export function StatusAlunoPill({ status }: { status: StatusAluno }) {
+  return <Pill tom={STATUS_ALUNO[status]}>{ROTULO_STATUS_ALUNO[status]}</Pill>
 }
 
 /* Barras */

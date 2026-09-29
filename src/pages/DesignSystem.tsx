@@ -20,6 +20,7 @@ import {
   SearchBox,
   SelectField,
   SortButton,
+  StatusAlunoPill,
   StatusPill,
   TeamBadge,
 } from '../components/ui'
@@ -124,6 +125,9 @@ export function DesignSystem() {
         <div className="flex flex-wrap items-center gap-4">
           {STATUS.map((s) => (
             <StatusPill key={s} status={s} />
+          ))}
+          {(['pendente', 'andamento', 'respondido', 'encerrado'] as const).map((s) => (
+            <StatusAlunoPill key={s} status={s} />
           ))}
           <Avatar letra="A" />
           <Avatar letra="SC" cor="#a67b5b" size={32} />

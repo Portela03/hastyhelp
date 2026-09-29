@@ -45,6 +45,8 @@ export interface Pergunta {
   tipo: 'unica' | 'multipla'
   opcoes: string[]
   marcadas: number[]
+  /** Opções corretas, definidas pelo professor. Só é mostrado ao aluno se o professor liberar o gabarito. */
+  gabarito?: number[]
 }
 
 export interface Aluno {
@@ -86,7 +88,7 @@ export const EQUIPES_INICIAIS: Equipe[] = [
   })),
 ]
 
-const PERGUNTAS: Pergunta[] = [
+export const PERGUNTAS: Pergunta[] = [
   {
     id: 'q1',
     enunciado: 'Qual é a fórmula da média aritmética simples?',
@@ -97,6 +99,7 @@ const PERGUNTAS: Pergunta[] = [
       'Raiz quadrada da soma dos valores (√Σx)',
     ],
     marcadas: [0],
+    gabarito: [0],
   },
   {
     id: 'q2',
@@ -108,6 +111,7 @@ const PERGUNTAS: Pergunta[] = [
       'É o valor central quando os dados estão ordenados',
     ],
     marcadas: [],
+    gabarito: [0],
   },
   {
     id: 'q3',
@@ -115,6 +119,7 @@ const PERGUNTAS: Pergunta[] = [
     tipo: 'unica',
     opcoes: ['75', '70', '80'],
     marcadas: [],
+    gabarito: [0],
   },
 ]
 
