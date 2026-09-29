@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { Cadastro, Login } from './pages/Auth'
+import { DesignSystem } from './pages/DesignSystem'
 import { EquipeAlunos, EquipeDetalhe, EquipeFormularios, EquipeResumo, Equipes } from './pages/Equipes'
 import { FormularioAlunos, FormularioDetalhe, FormularioPerguntas, FormularioResumo, Formularios } from './pages/Formularios'
 import { Metricas } from './pages/Metricas'
@@ -26,6 +27,7 @@ function App() {
       </Route>
 
       <Route path="/metricas" element={<Metricas />} />
+      <Route path="/design-system" element={<DesignSystem />} />
       <Route path="*" element={<Navigate to="/equipes" replace />} />
     </Routes>
   )
