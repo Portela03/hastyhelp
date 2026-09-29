@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import type { ReactNode } from 'react'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { useStore } from '../store'
 import blob1 from '../assets/figma/bg-blob-1.svg'
 import blob2 from '../assets/figma/bg-blob-2.svg'
@@ -76,7 +76,31 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   )
 }
 
-export function AppShell({ children, action, onMore }: { children: ReactNode; action?: ReactNode; onMore?: () => void }) {
+/** Botão de voltar no estilo da aba ativa do menu; leva sempre à página-mãe. */
+function BotaoVoltar({ para, rotulo }: { para: string; rotulo: string }) {
+  return (
+    <Link
+      to={para}
+      aria-label={`Voltar para ${rotulo}`}
+      className="flex items-center gap-2 rounded-xl bg-sidebar-active px-3 py-1.5 text-[16px] font-semibold text-white"
+    >
+      <Icon name="arrow_back" className="text-[20px]" />
+      Voltar
+    </Link>
+  )
+}
+
+export function AppShell({
+  children,
+  action,
+  onMore,
+  voltar,
+}: {
+  children: ReactNode
+  action?: ReactNode
+  onMore?: () => void
+  voltar?: { para: string; rotulo: string }
+}) {
   const [aberto, setAberto] = useState(false)
   return (
     <div className="flex min-h-screen bg-page">
@@ -93,14 +117,17 @@ export function AppShell({ children, action, onMore }: { children: ReactNode; ac
       )}
       <div className="flex min-w-0 flex-1 flex-col gap-6 pb-6">
         <header className="flex h-[54px] shrink-0 items-center justify-between border-b border-line bg-topbar px-4 lg:px-6">
-          <button
-            type="button"
-            aria-label="Abrir menu"
-            onClick={() => setAberto(true)}
-            className="flex cursor-pointer text-[24px] text-ink lg:invisible"
-          >
-            <Icon name="menu" />
-          </button>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              aria-label="Abrir menu"
+              onClick={() => setAberto(true)}
+              className="flex cursor-pointer text-[24px] text-ink lg:hidden"
+            >
+              <Icon name="menu" />
+            </button>
+            {voltar && <BotaoVoltar para={voltar.para} rotulo={voltar.rotulo} />}
+          </div>
           <div className="flex items-center gap-4">
             <button type="button" aria-label="Notificações" className="size-9 cursor-pointer">
               <img src={notification} alt="" className="size-full" />

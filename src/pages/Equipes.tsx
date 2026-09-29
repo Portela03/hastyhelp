@@ -111,7 +111,7 @@ export function EquipeDetalhe() {
 
   const base = `/equipes/${equipe.id}`
   return (
-    <AppShell action={<ButtonPrimary icon="edit" onClick={() => setEditar(true)}>Editar equipe</ButtonPrimary>}>
+    <AppShell voltar={{ para: '/equipes', rotulo: 'Equipes' }} action={<ButtonPrimary icon="edit" onClick={() => setEditar(true)}>Editar equipe</ButtonPrimary>}>
       <Banner
         titulo={equipe.nome}
         leading={<TeamBadge sigla={equipe.sigla} cor={equipe.cor} size={75} fontSize={30} />}

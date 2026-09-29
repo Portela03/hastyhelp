@@ -115,6 +115,7 @@ export function FormularioDetalhe() {
 
   return (
     <AppShell
+      voltar={{ para: '/avaliacoes', rotulo: 'Avaliações' }}
       onMore={() => setEditar(true)}
       action={<ButtonPrimary icon="outgoing_mail" iconRound={false}>Notificar pendentes</ButtonPrimary>}
     >

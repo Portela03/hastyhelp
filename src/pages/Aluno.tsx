@@ -219,7 +219,7 @@ export function AlunoTurmaDetalhe() {
   const est = estatisticas(minhas)
   const base = `/aluno/turmas/${turma.id}`
   return (
-    <AppShell>
+    <AppShell voltar={{ para: '/aluno/turmas', rotulo: 'Turmas' }}>
       <Banner
         titulo={turma.nome}
         leading={<TeamBadge sigla={turma.sigla} cor={turma.cor} size={75} fontSize={30} />}
@@ -452,7 +452,7 @@ export function AlunoAutoavaliacaoDetalhe() {
   const turma = turmaDe(a.turmaId)
   const base = `/aluno/autoavaliacoes/${a.id}`
   return (
-    <AppShell>
+    <AppShell voltar={{ para: '/aluno/autoavaliacoes', rotulo: 'Autoavaliações' }}>
       <Banner titulo={a.titulo} subtitulo={turma ? `${turma.nome} - ${turma.periodo}` : undefined}>
         {a.status === 'respondido' ? (
           <BannerStat rotulo="Minha nota" valor={a.nota === undefined ? 'Em análise' : `${formatarNota(a.nota)}/10`} />
