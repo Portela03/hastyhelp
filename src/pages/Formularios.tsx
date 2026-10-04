@@ -25,7 +25,12 @@ function FormRow({ form }: { form: Formulario }) {
       aria-label={`Abrir formulário ${form.titulo}`}
       onClick={abrir}
       onKeyDown={(e) => e.key === 'Enter' && abrir()}
-      className="flex cursor-pointer items-center gap-3 rounded-lg border border-line-input bg-white p-3"
+      className={cx(
+        "flex cursor-pointer items-center gap-3 rounded-lg border border-card-line bg-white p-3",
+        "transition duration-100",
+        "hover:bg-card-hover hover:shadow-card-hover",
+        "active:shadow-none"
+      )}
     >
       {!rascunho && equipe && <TeamBadge sigla={equipe.sigla} cor={equipe.cor} size={68} fontSize={32} />}
       <div className="flex min-w-0 flex-1 items-stretch justify-between gap-3">

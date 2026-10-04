@@ -113,7 +113,7 @@ export function EditarEquipeModal({ equipe, onClose }: { equipe: Equipe; onClose
                     aria-checked={cor === c}
                     aria-label={`Cor ${c}`}
                     onClick={() => setCor(c)}
-                    className={cx('size-[30px] cursor-pointer rounded-[4px]', cor === c && 'outline-2 outline-offset-0 outline-ink')}
+                    className={cx('size-[30px] cursor-pointer rounded-[4px] border-grey', cor === c && 'outline-2 outline-offset-0 outline-ink', cor !== c && 'hover:scale-105')}
                     style={{ backgroundColor: c }}
                   />
                 ))}

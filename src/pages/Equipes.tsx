@@ -24,7 +24,12 @@ function TeamCard({ equipe }: { equipe: Equipe }) {
       aria-label={`Abrir equipe ${equipe.nome}`}
       onClick={abrir}
       onKeyDown={(e) => e.key === 'Enter' && abrir()}
-      className="flex cursor-pointer flex-col gap-5 self-start rounded-lg border border-card-line bg-white p-3 drop-shadow-[0.5px_0.5px_0_#b7b7b7]"
+      className={cx(
+        "flex cursor-pointer flex-col gap-5 self-start rounded-lg border border-card-line bg-white p-3 drop-shadow-card",
+        "transition duration-100",
+        "hover:bg-card-hover hover:shadow-card-hover",
+        "active:shadow-none"
+      )}
     >
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2.5">
@@ -154,7 +159,12 @@ export function EquipeFormularios() {
       </Toolbar>
       <ul className="flex flex-col gap-3">
         {ordenadas.map((f, i) => (
-          <li key={i} className="flex flex-wrap items-center gap-x-6 gap-y-2 rounded-lg border border-line-input bg-white p-3">
+          <li key={i} className={cx(
+              "flex flex-wrap items-center gap-x-6 gap-y-2 rounded-lg border border-card-line bg-white p-3",
+              "transition duration-100",
+              "hover:bg-card-hover hover:shadow-card-hover",
+              "active:shadow-none"
+            )}>
             <span aria-label="Ativo" className="size-4 shrink-0 rounded-full bg-[#69be3a]" />
             <div className="flex min-w-[240px] flex-1 flex-col gap-1">
               <h3 className="text-[20px] font-semibold text-ink">{f.titulo}</h3>

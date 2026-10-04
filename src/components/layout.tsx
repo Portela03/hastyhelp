@@ -39,7 +39,8 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                 className={({ isActive }) =>
                   cx(
                     'flex h-[52px] items-center gap-2.5 rounded-xl px-3 py-2.5 text-[20px] text-white',
-                    isActive ? 'bg-sidebar-active font-semibold' : 'font-medium',
+                    'transition duration-100',
+                    isActive ? 'bg-sidebar-active font-semibold' : 'hover:bg-sidebar-hover font-medium',
                   )
                 }
               >
@@ -77,19 +78,25 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
 }
 
 const ESTILO_VOLTAR =
-  'flex items-center gap-2 rounded-xl bg-sidebar-active px-3 py-1.5 text-[16px] font-semibold text-white'
+  'group flex items-center gap-2 py-1.5 text-[16px] font-semibold text-ink transition duration-100'
 
 /**
  * Botão de voltar no estilo da aba ativa do menu.
  * Com `para`, leva à página-mãe; sem `para`, volta no histórico do navegador
  * (e fica desabilitado quando não há para onde voltar).
  */
-export function BotaoVoltar({ para, rotulo, className }: { para?: string; rotulo?: string; className?: string }) {
+export function BotaoVoltar({ para, rotulo, className, esconderCssIcon = false }: { para?: string; rotulo?: string; className?: string, esconderCssIcon?: boolean }) {
   const navigate = useNavigate()
+
+  const cssIcon = esconderCssIcon ? "text-[20px]" : cx(
+    "text-ink text-[16px] bg-btn border border-ink rounded-full shadow-btn-rounded",
+    "group-hover:bg-btn-hover group-hover:shadow-btn-rounded-hover",
+    "group-active:shadow-none",) 
+
   if (para) {
     return (
       <Link to={para} aria-label={`Voltar para ${rotulo ?? 'a página anterior'}`} className={cx(ESTILO_VOLTAR, className)}>
-        <Icon name="arrow_back" className="text-[20px]" />
+        <Icon name="arrow_back" className={cssIcon}/>
         Voltar
       </Link>
     )
@@ -103,7 +110,7 @@ export function BotaoVoltar({ para, rotulo, className }: { para?: string; rotulo
       onClick={() => navigate(-1)}
       className={cx(ESTILO_VOLTAR, 'cursor-pointer disabled:cursor-not-allowed disabled:opacity-50', className)}
     >
-      <Icon name="arrow_back" className="text-[20px]" />
+      <Icon name="arrow_back" className={cssIcon}/>
       Voltar
     </button>
   )
