@@ -36,6 +36,9 @@ export function ButtonPrimary({ icon, iconRound = true, children, className, ...
       {...rest}
       className={cx(
         'flex cursor-pointer items-center justify-center gap-1 whitespace-nowrap rounded-lg border border-ink bg-btn px-3 py-1 text-[20px] font-medium text-ink shadow-btn',
+        'transition duration-100',
+        'hover:bg-btn-hover hover:shadow-btn-hover',
+        'active:shadow-none',
         className,
       )}
     >
@@ -52,6 +55,9 @@ export function ButtonBrown({ children, className, ...rest }: BtnProps) {
       {...rest}
       className={cx(
         'flex min-w-0 flex-1 cursor-pointer items-center justify-center gap-1 rounded-lg border border-ink bg-btn-brown px-3 py-1 text-[20px] font-medium text-ink shadow-btn',
+        'transition duration-100',
+        'hover:bg-btn-brown-hover hover:shadow-btn-hover',
+        'active:shadow-none',
         className,
       )}
     >
@@ -67,6 +73,9 @@ export function ButtonGhost({ children, className, ...rest }: BtnProps) {
       {...rest}
       className={cx(
         'flex min-w-0 flex-1 cursor-pointer items-center justify-center rounded-lg bg-white px-1.5 py-1 text-[20px] font-medium text-[#505050]',
+        'transition duration-100',
+        'hover:opacity-80',
+        'active:scale-95',
         className,
       )}
     >

@@ -10,18 +10,22 @@
   --color-sidebar: #a08d77;
   --color-sidebar-line: #9f9082;
   --color-sidebar-active: #5f574f;
+  --color-sidebar-hover: #867867;
   --color-sidebar-label: #fffaf2;
   --color-topbar: #f7f2ec;
   --color-banner-to: #efe4d8;
   --color-line: #e5ded4;
   --color-line-input: #dbc9b1;
   --color-btn: #eee4da;
+  --color-btn-hover: #dcd4cc;
   --color-btn-brown: #dbc9b1;
+  --color-btn-brown-hover: #bead9b;
   --color-ink: #333333;
   --color-muted: #666666;
   --color-placeholder: #878787;
   --color-card-line: #b7b7b7;
   --color-card-sec: #404040;
+  --color-card-hover: #FFF6EC;
   --color-professor: #15593c;
   --color-panel: #faf9f7;
   --color-track: #e7e1d9;
@@ -30,10 +34,15 @@
   --color-diff-p: #a08d77;
   --color-diff-c: #ee5e5e;
   --color-bar-gray: #bebebe;
+  
 
   --shadow-card: 0.5px 0.5px 0 #b7b7b7;
+  --shadow-card-hover: 1px 1px 0 #b7b7b7;
   --shadow-btn: 2px 2px 0 #333333;
+  --shadow-btn-hover: 3px 3px 0 #333333;
   --shadow-banner: 0 4px 12px rgba(0, 0, 0, 0.08), inset 0 1px 4px rgba(255, 255, 255, 0.2);
+  --shadow-btn-rounded: 1px 1px 0 #333333;
+  --shadow-btn-rounded-hover: 1.5px 1.5px 0 #333333;
 }
 
 @layer base {

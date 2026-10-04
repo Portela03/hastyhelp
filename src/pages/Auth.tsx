@@ -1,9 +1,9 @@
 import { useState } from 'react'
 import type { FormEvent, ReactNode } from 'react'
-import { Link, useNavigate, useParams } from 'react-router-dom'
+import { useNavigate, useParams } from 'react-router-dom'
 import bg from '../assets/figma/login-bg.png'
 import { BotaoVoltar } from '../components/layout'
-import { Field, PasswordField, cx } from '../components/ui'
+import { ButtonBrown, ButtonGhost, Field, PasswordField, cx } from '../components/ui'
 import { CONVITES, TURMAS_ALUNO } from '../data/aluno'
 import type { Papel } from '../data/aluno'
 import { useStore } from '../store'
@@ -13,7 +13,7 @@ function AuthLayout({ titulo, children, voltarPara }: { titulo: string; children
     <div className="relative flex min-h-screen items-center justify-center p-4">
       <img src={bg} alt="" className="pointer-events-none absolute inset-0 size-full object-cover" />
       <div className="absolute inset-0 bg-black/10" />
-      <BotaoVoltar para={voltarPara} rotulo={voltarPara ? 'o login' : undefined} className="absolute left-4 top-4 z-10" />
+      <BotaoVoltar para={voltarPara} rotulo={voltarPara ? 'o login' : undefined} className="!gap-1 absolute left-4 top-4 z-10 px-3 border shadow-btn border-ink bg-btn rounded-lg hover:bg-btn-hover" esconderCssIcon = {true}/>
       <div className="relative flex w-full max-w-[460px] flex-col items-center gap-8 rounded-lg bg-white px-9 py-8">
         <h1 className="w-full text-[40px] font-semibold text-ink">{titulo}</h1>
         {children}
@@ -23,20 +23,17 @@ function AuthLayout({ titulo, children, voltarPara }: { titulo: string; children
 }
 
 function AuthButtons({ principal, alternativa, para }: { principal: string; alternativa: string; para: string }) {
+  const navigate = useNavigate();
+
   return (
     <div className="flex w-full gap-3">
-      <button
-        type="submit"
-        className="flex min-w-0 flex-1 cursor-pointer items-center justify-center rounded-lg border border-ink bg-btn-brown px-3 py-1 text-[20px] font-medium text-ink shadow-btn"
-      >
+      <ButtonBrown type="submit">
         {principal}
-      </button>
-      <Link
-        to={para}
-        className="flex min-w-0 flex-1 items-center justify-center rounded-lg bg-white px-1.5 py-1 text-[20px] font-medium text-[#505050]"
-      >
+      </ButtonBrown>
+
+      <ButtonGhost onClick={() => navigate(para)}>
         {alternativa}
-      </Link>
+      </ButtonGhost>
     </div>
   )
 }
