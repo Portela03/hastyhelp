@@ -27,7 +27,7 @@ export function Metricas() {
         titulo="Métricas"
         subtitulo="Aqui você acompanha o desempenho de todas suas turmas podendo escolher quais dados ver"
       >
-        <div className="flex flex-col items-end gap-1">
+        <div className="flex flex-col items-start gap-1 sm:items-end">
           <span className="text-[18px]">Visão atual</span>
           <strong className="text-[22px] font-bold">{turma || 'Todas as turmas'}</strong>
         </div>

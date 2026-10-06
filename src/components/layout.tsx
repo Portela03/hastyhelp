@@ -27,7 +27,7 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   const NAV = aluno ? NAV_ALUNO : NAV_PROFESSOR
   const nome = sessao?.nome ?? 'Alberto'
   return (
-    <aside className="flex h-full w-[220px] shrink-0 flex-col justify-between border-r border-sidebar-line bg-sidebar px-4 py-6 shadow-[1px_0_1.8px_rgba(0,0,0,0.2)]">
+    <aside className="flex h-full w-[240px] shrink-0 flex-col justify-between border-r border-sidebar-line bg-sidebar px-4 py-6 shadow-[1px_0_1.8px_rgba(0,0,0,0.2)]">
       <nav aria-label="Navegação principal" className="flex flex-col gap-2.5">
         <p className="text-[12px] font-semibold uppercase tracking-[0.24px] text-sidebar-label opacity-70">Navegação</p>
         <ul className="flex flex-col gap-2">
@@ -38,7 +38,7 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
                 onClick={onNavigate}
                 className={({ isActive }) =>
                   cx(
-                    'flex h-[52px] items-center gap-2.5 rounded-xl px-3 py-2.5 text-[20px] text-white',
+                    'flex h-[52px] items-center gap-2.5 rounded-xl px-3 py-2.5 text-[18px] whitespace-nowrap text-white',
                     'transition duration-100',
                     isActive ? 'bg-sidebar-active font-semibold' : 'hover:bg-sidebar-hover font-medium',
                   )
@@ -184,7 +184,7 @@ export function Banner({
   variante?: 'padrao' | 'lista'
 }) {
   return (
-    <section className="relative flex min-h-[100px] items-center justify-between gap-6 overflow-hidden rounded-2xl border border-line bg-linear-to-r from-topbar to-banner-to px-6 py-5 shadow-banner">
+    <section className="relative flex min-h-[100px] flex-col items-stretch justify-between gap-4 overflow-hidden sm:flex-row sm:items-center sm:gap-6 rounded-2xl border border-line bg-linear-to-r from-topbar to-banner-to px-6 py-5 shadow-banner">
       {variante === 'padrao' ? (
         <>
           <img src={blob1} alt="" className="pointer-events-none absolute -left-[41px] -top-[21px] size-[180px]" />
@@ -198,20 +198,24 @@ export function Banner({
         </>
       )}
       <div className="relative flex min-w-0 items-center gap-4">
-        {leading}
+        {leading && <div className="shrink-0">{leading}</div>}
         <div className="flex min-w-0 max-w-[860px] flex-col gap-1">
           <h1 className="text-[28px] font-bold leading-tight text-ink">{titulo}</h1>
           {subtitulo && <p className="text-[16px] text-muted">{subtitulo}</p>}
         </div>
       </div>
-      {children && <div className="relative flex shrink-0 items-center gap-8 text-right text-muted">{children}</div>}
+      {children && (
+        <div className="relative flex flex-wrap items-center gap-x-8 gap-y-2 text-left text-muted sm:shrink-0 sm:flex-nowrap sm:text-right">
+          {children}
+        </div>
+      )}
     </section>
   )
 }
 
 export function BannerStat({ rotulo, valor, tamanho = 20 }: { rotulo: string; valor: ReactNode; tamanho?: number }) {
   return (
-    <div className="flex flex-col items-center leading-normal" style={{ fontSize: tamanho }}>
+    <div className="flex flex-col items-start leading-normal sm:items-center" style={{ fontSize: tamanho }}>
       <span>{rotulo}</span>
       <strong className="font-bold">{valor}</strong>
     </div>
