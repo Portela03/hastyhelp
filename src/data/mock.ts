@@ -61,19 +61,45 @@ export interface Aluno {
 
 export const EQUIPES_INICIAIS: Equipe[] = [
   {
-    id: 'pdm',
-    nome: 'Programação para Dispositivos Móveis',
-    sigla: 'PD',
-    cor: '#8fcbc5',
+    id: 'dsm-web',
+    nome: 'Desenvolvimento Web Moderno',
+    sigla: 'DM',
+    cor: '#8df3b6', 
     periodo: '2026/02',
-    docente: 'Wellington Fernando Bastos',
-    totalAlunos: 30,
-    ultimoFormulario: 'Ultimo formulário a 2 dias',
-    taxaResposta: 43,
-    dominioMedio: 67,
-    engajamento: 80,
+    docente: 'Carlos Eduardo',
+    totalAlunos: 35,
+    ultimoFormulario: 'Ultimo formulário a 1 dia',
+    taxaResposta: 78,
+    dominioMedio: 82,
+    engajamento: 88,
   },
-  ...['b', 'c', 'd', 'e'].map((k, i) => ({
+  {
+    id: 'bd',
+    nome: 'Banco de Dados Relacional',
+    sigla: 'BD',
+    cor: '#f27c7e', 
+    periodo: '2026/01',
+    docente: 'Maria Silva',
+    totalAlunos: 45,
+    ultimoFormulario: 'Ultimo formulário a 5 dias',
+    taxaResposta: 85,
+    dominioMedio: 90,
+    engajamento: 95,
+  },
+  {
+    id: 'eng-soft',
+    nome: 'Engenharia de Software',
+    sigla: 'ES',
+    cor: '#b98fcb', 
+    periodo: '2026/02',
+    docente: 'João Paulo',
+    totalAlunos: 25,
+    ultimoFormulario: 'Ultimo formulário hoje',
+    taxaResposta: 15,
+    dominioMedio: 40,
+    engajamento: 60,
+  },
+  ...['b'].map((k, i) => ({
     id: `pdm-${k}`,
     nome: 'Programação para Dispositivos Móveis',
     sigla: 'PD',
@@ -124,15 +150,15 @@ export const PERGUNTAS: Pergunta[] = [
 ]
 
 export const FORMULARIOS_INICIAIS: Formulario[] = [
-  { id: 'f1', titulo: 'Teste', status: 'agendado' },
-  { id: 'f2', titulo: 'Teste', status: 'ativo' },
-  { id: 'f3', titulo: 'Teste', status: 'ativo' },
-  { id: 'f4', titulo: 'Teste', status: 'inativo' },
-  { id: 'f5', titulo: 'Teste', status: 'rascunho' },
+  { id: 'f1', titulo: 'Avaliação: Heurísticas de Nielsen e Usabilidade', status: 'agendado' },
+  { id: 'f2', titulo: 'Quiz: Arquitetura REST e Node.js', status: 'ativo' },
+  { id: 'f3', titulo: 'Pesquisa de Satisfação - Sprint 2', status: 'ativo' },
+  { id: 'f4', titulo: 'Prova Intermédia: Fundamentos de Git', status: 'inativo' },
+  { id: 'f5', titulo: 'Estruturação de Base de Dados (PostgreSQL)', status: 'rascunho' },
 ].map(({ id, titulo, status }) => ({
   id,
   titulo,
-  equipeId: 'pdm',
+  equipeId: 'eng-soft',
   periodo: 'Período',
   status: status as StatusFormulario,
   respostas: 20,
@@ -149,8 +175,8 @@ export const ALUNOS: Aluno[] = [
 ]
 
 export const FORMULARIOS_DA_EQUIPE = [
-  { titulo: 'Teste', respondidos: 25, total: 50, dominio: 50, dificuldade: 'P', criacao: '29/08' },
-  { titulo: 'Teste', respondidos: 25, total: 50, dominio: 50, dificuldade: 'P', criacao: '29/08' },
+  { titulo: 'Avaliação: Heurísticas de Nielsen e Usabilidade', respondidos: 25, total: 50, dominio: 50, dificuldade: 'P', criacao: '29/08' },
+  { titulo: 'Quiz: Arquitetura REST e Node.js', respondidos: 25, total: 50, dominio: 50, dificuldade: 'P', criacao: '29/08' },
 ]
 
 export const OBSERVACOES = [

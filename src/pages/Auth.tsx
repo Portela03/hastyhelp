@@ -40,7 +40,14 @@ function AuthButtons({ principal, alternativa, para }: { principal: string; alte
 
 function EscolhaPapel({ papel, onChange }: { papel: Papel; onChange: (p: Papel) => void }) {
   return (
-    <div role="radiogroup" aria-label="Entrar como" className="flex w-full gap-2">
+    <div role="radiogroup" aria-label="Entrar como" className="relative flex items-center rounded-[9px] border border-placeholder bg-white ">
+      <div className={cx(
+          'absolute top-0 left-0 h-full w-1/2 bg-btn-brown outline rounded-lg',
+          'transform duration-250 ease-in-out',
+          papel === 'professor' ? "translate-x-0" : "translate-x-full"        
+        )}
+      />
+
       {(['professor', 'aluno'] as const).map((p) => (
         <button
           key={p}
@@ -49,8 +56,8 @@ function EscolhaPapel({ papel, onChange }: { papel: Papel; onChange: (p: Papel) 
           aria-checked={papel === p}
           onClick={() => onChange(p)}
           className={cx(
-            'flex-1 cursor-pointer rounded-lg border px-3 py-2 text-[16px] font-medium',
-            papel === p ? 'border-ink bg-btn-brown text-ink shadow-btn' : 'border-line-input bg-white text-muted',
+            'relative z-10 flex-1 cursor-pointer rounded-lg px-3 py-2 text-[16px] font-medium',
+            papel === p ? 'text-ink' : 'text-muted',
           )}
         >
           {p === 'professor' ? 'Sou professor' : 'Sou aluno'}
