@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import type { FormEvent } from 'react'
 import { CORES_EQUIPE, PERIODOS } from '../data/mock'
 import type { Equipe, Formulario, Pergunta, StatusFormulario } from '../data/mock'
@@ -307,6 +308,253 @@ export function EditarFormularioModal({ formulario, onClose }: { formulario: For
         </div>
         <Acoes concluir="Concluir" onClose={onClose} />
       </form>
+    </Modal>
+  )
+}
+
+type SwitchProps = {
+  label: string
+  checked: boolean
+  onChange: (checked: boolean) => void
+  esconderLabel?: boolean
+}
+
+function PerfilSwitch({
+  label,
+  checked,
+  onChange,
+  esconderLabel = false,
+}: SwitchProps) {
+  return (
+    <label
+      className={cx(
+        'flex cursor-pointer items-center gap-4 text-[20px] font-medium text-ink',        
+        esconderLabel ? 'w-[52px] justify-center' : 'w-full justify-between',
+      )}
+    >
+      {!esconderLabel && <span>{label}</span>}
+
+      <button
+        type="button"
+        role="switch"
+        aria-checked={checked}
+        aria-label={label}
+        onClick={() => onChange(!checked)}
+        className={cx(
+          'relative flex h-[28px] w-[52px] shrink-0 cursor-pointer items-center rounded-full p-1 transition-colors',
+          checked ? 'bg-ok' : 'bg-line',
+        )}
+      >
+        <span
+          className={cx(
+            'size-[20px] rounded-full bg-white shadow-sm transition-transform',
+            checked ? 'translate-x-[24px]' : 'translate-x-0',
+          )}
+        />
+      </button>
+    </label>
+  )
+}
+
+function PerfilCheck({
+  label,
+  checked,
+  onChange,
+}: {
+  label: string
+  checked: boolean
+  onChange: (checked: boolean) => void
+}) {
+  return (
+    <label className="flex w-full cursor-pointer items-center justify-between gap-4 text-[18px] text-muted">
+      <span>{label}</span>
+
+      <span className="flex w-[52px] shrink-0 justify-center">
+        <input
+          type="checkbox"
+          checked={checked}
+          onChange={(event) => onChange(event.target.checked)}
+          className="size-5 cursor-pointer accent-ok"
+        />
+      </span>
+    </label>
+  )
+}
+
+const EMAILS_PERFIL = {
+  aluno: 'marina.santos@universidade.edu.br',
+  professor: 'alberto.silva@universidade.edu.br',
+} as const
+
+function iniciaisDoNome(nome: string) {
+  return nome
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((parte) => parte[0])
+    .join('')
+    .toUpperCase()
+}
+
+export function PerfilModal({ onClose }: { onClose: () => void }) {
+  const { sessao, sair, preferencias, atualizarPreferencias } = useStore()
+  const navigate = useNavigate()
+
+  const papel = sessao?.papel ?? 'professor'
+  const nome = sessao?.nome ?? 'Alberto'
+  const email = EMAILS_PERFIL[papel]
+  const ehAluno = papel === 'aluno'
+
+  const [rascunho, setRascunho] = useState(preferencias)
+
+  function atualizar<K extends keyof typeof rascunho>(campo: K, valor: (typeof rascunho)[K]) {
+    setRascunho((atual) => ({
+      ...atual,
+      [campo]: valor,
+    }))
+  }
+
+  function concluir() {
+    atualizarPreferencias(rascunho)
+    onClose()
+  }
+
+  function encerrarSessao() {
+    sair()
+    onClose()
+    navigate('/login', { replace: true })
+  }
+
+  return (
+    <Modal
+      title={`Perfil do ${ehAluno ? 'aluno' : 'professor'}`}
+      icon="person"
+      onClose={onClose}
+      width={600}
+    >
+      <div className="flex w-full flex-col gap-7">
+        <section className="flex w-full items-center gap-5 rounded-2xl border border-card-line bg-banner-to px-4 py-4 sm:px-5">
+          <Avatar
+            letra={iniciaisDoNome(nome)}
+            cor={ehAluno ? '#a67b5b' : '#15593c'}
+            size={80}
+            className="!text-[30px]"
+          />
+
+          <div className="min-w-0 flex-1">
+            <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
+              <h3 className="truncate text-[28px] font-bold text-ink">
+                {nome}
+              </h3>
+
+              <span className="w-fit rounded-md bg-btn px-3 py-1 text-[16px] text-muted">
+                {ehAluno ? 'Aluno' : 'Professor'}
+              </span>
+            </div>
+
+            <p className="truncate text-[18px] text-muted">
+              {email}
+            </p>
+          </div>
+        </section>
+
+        <section className="flex flex-col gap-3">
+          <div className="flex items-center justify-between gap-4">
+            <h3 className="text-[20px] font-medium text-ink">
+              Notificações via Email
+            </h3>
+
+            <PerfilSwitch
+              label="Ativar notificações via Email"
+              checked={rascunho.notificacoesEmail}
+              onChange={(valor) => atualizar('notificacoesEmail', valor)}
+              esconderLabel
+            />
+          </div>
+
+          <div
+            className={cx(
+              'grid transition-[grid-template-rows,opacity] duration-300 ease-in-out',
+              rascunho.notificacoesEmail
+                ? 'grid-rows-[1fr] opacity-100'
+                : 'grid-rows-[0fr] opacity-0',
+            )}
+          >
+            <div className="min-h-0 overflow-hidden">
+              <div className="flex flex-col gap-3 pl-3 pt-1 sm:pl-6">
+                <PerfilCheck
+                  label="Conclusão de formulários"
+                  checked={rascunho.conclusaoFormularios}
+                  onChange={(valor) => atualizar('conclusaoFormularios', valor)}
+                />
+
+                <PerfilCheck
+                  label="Publicação de formulários"
+                  checked={rascunho.publicacaoFormularios}
+                  onChange={(valor) => atualizar('publicacaoFormularios', valor)}
+                />
+
+                <PerfilCheck
+                  label="Métricas trimestrais"
+                  checked={rascunho.metricasTrimestrais}
+                  onChange={(valor) => atualizar('metricasTrimestrais', valor)}
+                />
+
+                <PerfilCheck
+                  label="Métricas semestrais"
+                  checked={rascunho.metricasSemestrais}
+                  onChange={(valor) => atualizar('metricasSemestrais', valor)}
+                />
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div className="h-px w-full bg-card-line" />
+
+        <PerfilSwitch
+          label="Ícone de acessibilidade"
+          checked={rascunho.acessibilidade}
+          onChange={(valor) => {
+            atualizar('acessibilidade', valor)
+            atualizarPreferencias({ acessibilidade: valor })
+          }}
+        />
+
+        <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center sm:justify-between">
+          <label htmlFor="tema-perfil" className="text-[20px] font-medium text-ink">
+            Temas
+          </label>
+
+          <select
+            id="tema-perfil"
+            value={rascunho.tema}
+            onChange={(event) => atualizar('tema', event.target.value as 'claro')}
+            className="w-full cursor-pointer rounded-lg border border-placeholder bg-white px-3 py-2 text-[18px] text-placeholder outline-none focus-visible:border-ink sm:w-[238px]"
+          >
+            <option value="claro">Claro</option>
+          </select>
+        </div>
+
+        <div className="flex w-full flex-col gap-3 sm:flex-row">
+          <ButtonBrown type="button" onClick={concluir}>
+            Concluir
+          </ButtonBrown>
+
+          <ButtonGhost type="button" onClick={onClose}>
+            Cancelar
+          </ButtonGhost>
+        </div>
+
+        <button
+          type="button"
+          onClick={encerrarSessao}
+          className="mx-auto flex cursor-pointer items-center gap-2 text-[18px] text-diff-c transition hover:opacity-75"
+        >
+          <Icon name="logout" round={false} />
+          Sair da conta
+        </button>
+      </div>
     </Modal>
   )
 }

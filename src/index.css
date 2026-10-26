@@ -76,3 +76,11 @@
   line-height: 1;
   user-select: none;
 }
+
+body.ocultar-widget-acessibilidade #userway_widget,
+body.ocultar-widget-acessibilidade #userway-widget,
+body.ocultar-widget-acessibilidade .uwy {
+  display: none !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}

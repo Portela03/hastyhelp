@@ -7,6 +7,7 @@ import blob2 from '../assets/figma/bg-blob-2.svg'
 import chevron from '../assets/figma/chevron-down.svg'
 import notification from '../assets/figma/notification.svg'
 import { Avatar, Icon, cx } from './ui'
+import { PerfilModal } from './modals'
 
 const NAV_PROFESSOR = [
   { to: '/equipes', label: 'Equipes', icon: 'groups' },
@@ -21,59 +22,78 @@ const NAV_ALUNO = [
 ]
 
 function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
-  const { sessao, sair } = useStore()
-  const navigate = useNavigate()
+  const { sessao } = useStore()
   const aluno = sessao?.papel === 'aluno'
   const NAV = aluno ? NAV_ALUNO : NAV_PROFESSOR
   const nome = sessao?.nome ?? 'Alberto'
+  const [perfilAberto, setPerfilAberto] = useState(false)
+  
   return (
-    <aside className="flex h-full w-[240px] shrink-0 flex-col justify-between border-r border-sidebar-line bg-sidebar px-4 py-6 shadow-[1px_0_1.8px_rgba(0,0,0,0.2)]">
-      <nav aria-label="Navegação principal" className="flex flex-col gap-2.5">
-        <p className="text-[12px] font-semibold uppercase tracking-[0.24px] text-sidebar-label opacity-70">Navegação</p>
-        <ul className="flex flex-col gap-2">
-          {NAV.map((item) => (
-            <li key={item.to}>
-              <NavLink
-                to={item.to}
-                onClick={onNavigate}
-                className={({ isActive }) =>
-                  cx(
-                    'flex h-[52px] items-center gap-2.5 rounded-xl px-3 py-2.5 text-[18px] whitespace-nowrap text-white',
-                    'transition duration-100',
-                    isActive ? 'bg-sidebar-active font-semibold' : 'hover:bg-sidebar-hover font-medium',
-                  )
-                }
-              >
-                <span className="flex size-8 items-center justify-center">
-                  <Icon name={item.icon} round={false} className="text-[26px]" />
-                </span>
-                {item.label}
-              </NavLink>
-            </li>
-          ))}
-        </ul>
-      </nav>
-      <div className="flex flex-col gap-3">
-        <div className="h-px bg-sidebar-active" />
-        <button
-          type="button"
-          title="Sair"
-          aria-label={`Sair (${nome})`}
-          onClick={() => {
-            sair()
-            navigate('/login')
-          }}
-          className="flex cursor-pointer items-center gap-3 rounded-[14px] border border-sidebar-line bg-btn-brown px-3 py-2.5 text-left drop-shadow-[0_2px_3px_rgba(0,0,0,0.06)]"
-        >
-          <Avatar letra={nome[0]} cor={aluno ? '#a67b5b' : undefined} />
-          <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-            <p className="truncate text-[15px] font-semibold text-ink">{nome}</p>
-            <p className="text-[12px] text-muted">{aluno ? 'Aluno' : 'Professor'}</p>
-          </div>
-          <Icon name="chevron_right" round={false} className="text-[18px] text-muted" />
-        </button>
-      </div>
-    </aside>
+    <>
+      <aside className="flex h-full w-[240px] shrink-0 flex-col justify-between border-r border-sidebar-line bg-sidebar px-4 py-6 shadow-[1px_0_1.8px_rgba(0,0,0,0.2)]">
+        <nav aria-label="Navegação principal" className="flex flex-col gap-2.5">
+          <p className="text-[12px] font-semibold uppercase tracking-[0.24px] text-sidebar-label opacity-70">
+            Navegação
+          </p>
+
+          <ul className="flex flex-col gap-2">
+            {NAV.map((item) => (
+              <li key={item.to}>
+                <NavLink
+                  to={item.to}
+                  onClick={onNavigate}
+                  className={({ isActive }) =>
+                    cx(
+                      'flex h-[52px] items-center gap-2.5 rounded-xl px-3 py-2.5 text-[18px] whitespace-nowrap text-white',
+                      'transition duration-100',
+                      isActive
+                        ? 'bg-sidebar-active font-semibold'
+                        : 'hover:bg-sidebar-hover font-medium',
+                    )
+                  }
+                >
+                  <span className="flex size-8 items-center justify-center">
+                    <Icon name={item.icon} round={false} className="text-[26px]" />
+                  </span>
+
+                  {item.label}
+                </NavLink>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <div className="flex flex-col gap-3">
+          <div className="h-px bg-sidebar-active" />
+
+          <button
+            type="button"
+            title="Abrir perfil"
+            aria-label={`Abrir perfil de ${nome}`}
+            onClick={() => setPerfilAberto(true)}
+            className="flex cursor-pointer items-center gap-3 rounded-[14px] border border-sidebar-line bg-btn-brown px-3 py-2.5 text-left drop-shadow-[0_2px_3px_rgba(0,0,0,0.06)]"
+          >
+            <Avatar letra={nome[0]} cor={aluno ? '#a67b5b' : undefined} />
+
+            <div className="flex min-w-0 flex-1 flex-col gap-0.5">
+              <p className="truncate text-[15px] font-semibold text-ink">
+                {nome}
+              </p>
+
+              <p className="text-[12px] text-muted">
+                {aluno ? 'Aluno' : 'Professor'}
+              </p>
+            </div>
+
+            <Icon name="chevron_right" round={false} className="text-[18px] text-muted" />
+          </button>
+        </div>
+      </aside>
+
+      {perfilAberto && (
+        <PerfilModal onClose={() => setPerfilAberto(false)} />
+      )}
+    </>
   )
 }
 

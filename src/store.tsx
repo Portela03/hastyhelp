@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useMemo, useState } from 'react'
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
 import type { ReactNode } from 'react'
 import {
   ALUNO_LOGADO,
@@ -26,6 +26,8 @@ interface Store {
   salvarResposta: (id: string, perguntaId: string, marcadas: number[]) => void
   enviarAutoavaliacao: (id: string) => void
   removerFormulario: (id: string) => void
+  preferencias: PreferenciasPerfil
+  atualizarPreferencias: (dados: Partial<PreferenciasPerfil>) => void
 }
 
 const StoreContext = createContext<Store | null>(null)
@@ -54,6 +56,23 @@ export function StoreProvider({ children }: { children: ReactNode }) {
   const [equipes, setEquipes] = useState<Equipe[]>(EQUIPES_INICIAIS)
   const [formularios, setFormularios] = useState<Formulario[]>(FORMULARIOS_INICIAIS)
   const [autoavaliacoes, setAutoavaliacoes] = useState<AutoavaliacaoAluno[]>(AUTOAVALIACOES_ALUNO_INICIAIS)
+
+  const [preferencias, setPreferencias] = useState<PreferenciasPerfil>({
+    notificacoesEmail: true,
+    conclusaoFormularios: true,
+    publicacaoFormularios: true,
+    metricasTrimestrais: true,
+    metricasSemestrais: true,
+    acessibilidade: true,
+    tema: 'claro',
+  })
+
+  useEffect(() => {
+    document.body.classList.toggle(
+      'ocultar-widget-acessibilidade',
+      !preferencias.acessibilidade,
+    )
+  }, [preferencias.acessibilidade])
 
   const entrar = useCallback((papel: Papel) => {
     const nova: Sessao = { papel, nome: papel === 'aluno' ? ALUNO_LOGADO : PROFESSOR_LOGADO }
@@ -109,6 +128,16 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     )
   }, [])
 
+  const atualizarPreferencias = useCallback(
+    (dados: Partial<PreferenciasPerfil>) => {
+      setPreferencias((atuais) => ({
+        ...atuais,
+        ...dados,
+      }))
+    },
+    [],
+  )
+
   const value = useMemo(
     () => ({
       sessao,
@@ -124,8 +153,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       autoavaliacoes,
       salvarResposta,
       enviarAutoavaliacao,
+      preferencias,
+      atualizarPreferencias,
     }),
-    [sessao, entrar, sair, equipes, formularios, adicionarEquipe, atualizarEquipe, adicionarFormulario, atualizarFormulario, autoavaliacoes, salvarResposta, enviarAutoavaliacao],
+    [sessao, entrar, sair, equipes, formularios, adicionarEquipe, atualizarEquipe, adicionarFormulario, atualizarFormulario, autoavaliacoes, salvarResposta, enviarAutoavaliacao, preferencias, atualizarPreferencias],
   )
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>
 }
@@ -136,3 +167,14 @@ export function useStore() {
   if (!ctx) throw new Error('useStore deve ser usado dentro de StoreProvider')
   return ctx
 }
+
+export interface PreferenciasPerfil {
+  notificacoesEmail: boolean
+  conclusaoFormularios: boolean
+  publicacaoFormularios: boolean
+  metricasTrimestrais: boolean
+  metricasSemestrais: boolean
+  acessibilidade: boolean
+  tema: 'claro'
+}
+
