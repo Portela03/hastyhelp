@@ -25,6 +25,7 @@ interface Store {
   autoavaliacoes: AutoavaliacaoAluno[]
   salvarResposta: (id: string, perguntaId: string, marcadas: number[]) => void
   enviarAutoavaliacao: (id: string) => void
+  removerFormulario: (id: string) => void
 }
 
 const StoreContext = createContext<Store | null>(null)
@@ -74,6 +75,14 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     (id: string, dados: Partial<Formulario>) => setFormularios((l) => l.map((f) => (f.id === id ? { ...f, ...dados } : f))),
     [],
   )
+  const removerFormulario = useCallback(
+  (id: string) => {
+    setFormularios((lista) =>
+      lista.filter((formulario) => formulario.id !== id),
+    )
+  },
+  [],
+)
 
   /** Salva a resposta na hora (rascunho). Só vale enquanto a autoavaliação está aberta. */
   const salvarResposta = useCallback((id: string, perguntaId: string, marcadas: number[]) => {
@@ -111,6 +120,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       atualizarEquipe,
       adicionarFormulario,
       atualizarFormulario,
+      removerFormulario,
       autoavaliacoes,
       salvarResposta,
       enviarAutoavaliacao,

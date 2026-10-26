@@ -6,15 +6,20 @@ import dotI from '../assets/figma/dot-i.svg'
 import dotP from '../assets/figma/dot-p.svg'
 import sortIcon from '../assets/figma/sort.svg'
 import { AppShell, Banner, BannerStat, DataTable, Section, TabBar, Toolbar } from '../components/layout'
-import { CriarEquipeModal, EditarEquipeModal } from '../components/modals'
-import { Avatar, ButtonPrimary, DifficultyLetter, FilterSelect, KpiCard, Panel, ProgressBar, SearchBox, SortButton, TeamBadge, cx } from '../components/ui'
-import { ALUNOS, FORMULARIOS_DA_EQUIPE, PERIODOS } from '../data/mock'
-import type { Equipe } from '../data/mock'
+import { CriarEquipeModal, EditarEquipeModal, EditarFormularioModal } from '../components/modals'
+import { Avatar, ButtonPrimary, DifficultyLetter, FilterSelect, KpiCard, Panel, ProgressBar, SearchBox, StatusPill, SortButton, TeamBadge, cx, OptionsMenu } from '../components/ui'
+import { ALUNOS, PERIODOS } from '../data/mock'
+import type { Equipe, Formulario } from '../data/mock'
 import { useStore } from '../store'
 
 /* Lista de equipes */
+type TeamCardProps = {
+  equipe: Equipe
+  onEditar: (equipe: Equipe) => void
+  onAlternarVisibilidade: (equipe: Equipe) => void
+}
 
-function TeamCard({ equipe }: { equipe: Equipe }) {
+function TeamCard({ equipe, onEditar, onAlternarVisibilidade }: TeamCardProps) {
   const navigate = useNavigate()
   const abrir = () => navigate(`/equipes/${equipe.id}`)
   return (
@@ -35,14 +40,29 @@ function TeamCard({ equipe }: { equipe: Equipe }) {
         <div className="flex items-center gap-2.5">
           <TeamBadge sigla={equipe.sigla} cor={equipe.cor} size={60} fontSize={30} />
           <h2 className="min-w-0 flex-1 text-[16px] font-semibold tracking-[-0.64px] text-ink">{equipe.nome}</h2>
-          <button
-            type="button"
-            aria-label={`Opções da equipe ${equipe.nome}`}
-            onClick={(e) => e.stopPropagation()}
-            className="cursor-pointer font-inter text-[20px] leading-none text-ink"
-          >
-            ...
-          </button>
+          <OptionsMenu
+            label={`Opções da equipe ${equipe.nome}`}
+            items={[
+              {
+                label: 'Editar',
+                icon: 'edit',
+                onClick: () => onEditar(equipe),
+              },
+              {
+                label: equipe.oculta ? 'Desocultar' : 'Ocultar',
+                icon: equipe.oculta ? 'visibility' : 'visibility_off',
+                onClick: () => onAlternarVisibilidade(equipe),
+              },
+              {
+                label: 'Excluir',
+                icon: 'delete',
+                destructive: true,
+                onClick: () => {
+                  // Excluir equipe
+                },
+              },
+            ]}
+          />
         </div>
         <p className="text-[16px] leading-4 text-card-sec">{`${equipe.totalAlunos} Alunos • ${equipe.ultimoFormulario}`}</p>
       </div>
@@ -58,23 +78,37 @@ function TeamCard({ equipe }: { equipe: Equipe }) {
 }
 
 export function Equipes() {
-  const { equipes } = useStore()
+  const { equipes, atualizarEquipe } = useStore()  
   const [modal, setModal] = useState(false)
   const [busca, setBusca] = useState('')
   const [periodo, setPeriodo] = useState('')
-  const [ocultas, setOcultas] = useState(false)
   const [asc, setAsc] = useState(true)
+  const [equipeEditando, setEquipeEditando] = useState<Equipe | null>(null)
 
-  const lista = useMemo(() => {
-    const filtradas = equipes
+  const equipesVisiveis = useMemo(() => {
+    return equipes
+      .filter((e) => !e.oculta)
       .filter((e) => e.nome.toLowerCase().includes(busca.toLowerCase()))
       .filter((e) => !periodo || e.periodo === periodo)
-      .filter((e) => ocultas || !e.oculta)
-    return filtradas.sort((a, b) => (asc ? 1 : -1) * a.nome.localeCompare(b.nome, 'pt-BR'))
-  }, [equipes, busca, periodo, ocultas, asc])
+      .sort((a, b) => (asc ? 1 : -1) * a.nome.localeCompare(b.nome, 'pt-BR'))
+  }, [equipes, busca, periodo, asc])
+
+  const equipesOcultas = useMemo(() => {
+    return equipes
+      .filter((e) => e.oculta)
+      .filter((e) => e.nome.toLowerCase().includes(busca.toLowerCase()))
+      .filter((e) => !periodo || e.periodo === periodo)
+      .sort((a, b) => (asc ? 1 : -1) * a.nome.localeCompare(b.nome, 'pt-BR'))
+  }, [equipes, busca, periodo, asc])
+
+  const alternarVisibilidade = (equipe: Equipe) => {
+  atualizarEquipe(equipe.id, {
+    oculta: !equipe.oculta,
+  })
+}
 
   return (
-    <AppShell action={<ButtonPrimary icon="add" onClick={() => setModal(true)}>Criar equipe</ButtonPrimary>}>
+    <AppShell action={<ButtonPrimary icon="add" onClick={() => setModal(true)} className="!text-[18px]">Criar equipe</ButtonPrimary>}>
       <Banner titulo="Minhas Equipes" subtitulo="Bem-vindo(a) de volta! Aqui você acompanha o progresso e o engajamento das suas turmas com facilidade." />
       <Toolbar>
         <div className="flex flex-wrap items-center gap-3">
@@ -82,25 +116,55 @@ export function Equipes() {
           <FilterSelect label="Período" value={periodo} onChange={setPeriodo} options={[...PERIODOS]} />
         </div>
         <div className="flex flex-wrap items-center gap-2.5">
-          <label className="flex cursor-pointer items-center gap-2 font-inter text-[16px] text-ink">
-            <input type="checkbox" checked={ocultas} onChange={(e) => setOcultas(e.target.checked)} className="size-4 cursor-pointer accent-sidebar" />
-            Mostrar turmas ocultas
-          </label>
           <SortButton icon={sortIcon} label={asc ? 'Alfabeticamente' : 'Alfabeticamente (Z-A)'} onClick={() => setAsc((v) => !v)} />
         </div>
       </Toolbar>
       <Section titulo="Equipes">
-        {lista.length === 0 ? (
-          <p className="text-[16px] text-muted">Nenhuma equipe encontrada.</p>
+        {equipesVisiveis.length === 0 ? (
+          <p className="text-[16px] text-muted">
+            Nenhuma equipe encontrada.
+          </p>
         ) : (
           <div className="grid grid-cols-1 gap-x-4 gap-y-3 md:grid-cols-2 xl:grid-cols-3">
-            {lista.map((e) => (
-              <TeamCard key={e.id} equipe={e} />
+            {equipesVisiveis.map((equipe) => (
+              <TeamCard
+                key={equipe.id}
+                equipe={equipe}
+                onEditar={setEquipeEditando}
+                onAlternarVisibilidade={alternarVisibilidade}
+              />
             ))}
           </div>
         )}
       </Section>
-      {modal && <CriarEquipeModal onClose={() => setModal(false)} />}
+      {modal && (
+        <CriarEquipeModal onClose={() => setModal(false)} />
+      )}
+
+      {equipesOcultas.length > 0 && (
+      <Section
+        titulo="Equipes ocultas"
+        inicialmenteAberta={false}
+      >
+        <div className="grid grid-cols-1 gap-x-4 gap-y-3 md:grid-cols-2 xl:grid-cols-3">
+          {equipesOcultas.map((equipe) => (
+            <TeamCard
+              key={equipe.id}
+              equipe={equipe}
+              onEditar={setEquipeEditando}
+              onAlternarVisibilidade={alternarVisibilidade}
+            />
+          ))}
+        </div>
+      </Section>
+)}
+
+      {equipeEditando && (
+        <EditarEquipeModal
+          equipe={equipeEditando}
+          onClose={() => setEquipeEditando(null)}
+        />
+      )}
     </AppShell>
   )
 }
@@ -109,15 +173,45 @@ export function Equipes() {
 
 export function EquipeDetalhe() {
   const { id } = useParams()
-  const { equipes } = useStore()
+  const { equipes, atualizarEquipe } = useStore()
   const equipe = equipes.find((e) => e.id === id)
   const [editar, setEditar] = useState(false)
   if (!equipe) return <Navigate to="/equipes" replace />
 
   const base = `/equipes/${equipe.id}`
   return (
-    <AppShell voltar={{ para: '/equipes', rotulo: 'Equipes' }} action={<ButtonPrimary icon="edit" onClick={() => setEditar(true)}>Editar equipe</ButtonPrimary>}>
-      <Banner
+    <AppShell
+      voltar={{ para: '/equipes', rotulo: 'Equipes' }}
+      action={
+        <div className="flex items-center gap-3">
+          <ButtonPrimary icon="edit" onClick={() => setEditar(true)} className='!text-[16px]'> Editar equipe </ButtonPrimary>
+
+          <OptionsMenu
+            label={`Opções da equipe ${equipe.nome}`}
+            items={[
+              {
+                label: equipe.oculta ? 'Desocultar equipe' : 'Ocultar equipe',
+                icon: equipe.oculta ? 'visibility' : 'visibility_off',
+                onClick: () => {
+                  atualizarEquipe(equipe.id, {
+                    oculta: !equipe.oculta,
+                  })
+                },
+              },
+              {
+                label: 'Excluir equipe',
+                icon: 'delete',
+                destructive: true,
+                onClick: () => {
+                  // implementar exclusão
+                },
+              },
+            ]}
+          />
+        </div>
+      }
+    >   
+    <Banner
         titulo={equipe.nome}
         leading={<TeamBadge sigla={equipe.sigla} cor={equipe.cor} size={75} fontSize={30} />}
         subtitulo={`${equipe.docente} • ${equipe.totalAlunos} alunos`}
@@ -143,61 +237,187 @@ function useEquipe() {
 }
 
 export function EquipeFormularios() {
+  const equipe = useEquipe()
+  const navigate = useNavigate()
+  const { formularios, atualizarFormulario, removerFormulario } = useStore()
   const [busca, setBusca] = useState('')
   const [status, setStatus] = useState('')
   const [asc, setAsc] = useState(false)
-  const linhas = FORMULARIOS_DA_EQUIPE.filter((f) => f.titulo.toLowerCase().includes(busca.toLowerCase()))
+  const [formularioEditando, setFormularioEditando] = useState<Formulario | null>(null)
+
+  const linhas = formularios
+    .filter((formulario) => formulario.equipeId === equipe.id)
+    .filter((formulario) => formulario.titulo.toLowerCase().includes(busca.toLowerCase()))
+    .filter((formulario) => !status || formulario.status === status)
+
   const ordenadas = asc ? [...linhas].reverse() : linhas
+
+  const abrirFormulario = (id: string) => {
+    navigate(`/avaliacoes/${id}`)
+  }
+
   return (
     <>
       <Toolbar>
         <div className="flex flex-wrap items-center gap-3">
-          <SearchBox value={busca} onChange={setBusca} placeholder="Buscar formulários..." />
-          <FilterSelect label="Status" value={status} onChange={setStatus} options={['Ativo', 'Agendado', 'Inativo', 'Rascunho']} />
+          <SearchBox
+            value={busca}
+            onChange={setBusca}
+            placeholder="Buscar formulários..."
+          />
+
+          <FilterSelect
+            label="Status"
+            value={status}
+            onChange={setStatus}
+            options={['ativo', 'agendado', 'inativo', 'rascunho']}
+          />
         </div>
-        <SortButton icon={sortIcon} label="Data de publicação" onClick={() => setAsc((v) => !v)} />
+
+        <SortButton
+          icon={sortIcon}
+          label="Data de publicação"
+          onClick={() => setAsc((v) => !v)}
+        />
       </Toolbar>
-      <ul className="flex flex-col gap-3">
-        {ordenadas.map((f, i) => (
-          <li key={i} className={cx(
-              "flex flex-wrap items-center gap-x-6 gap-y-2 rounded-lg border border-card-line bg-white p-3",
-              "transition duration-100",
-              "hover:bg-card-hover hover:shadow-card-hover",
-              "active:shadow-none"
-            )}>
-            <span aria-label="Ativo" className="size-4 shrink-0 rounded-full bg-[#69be3a]" />
-            <div className="flex min-w-[240px] flex-1 flex-col gap-1">
-              <h3 className="text-[20px] font-semibold text-ink">{f.titulo}</h3>
-              <div className="flex max-w-[342px] flex-col gap-1">
-                <div className="flex justify-between text-[16px] text-muted">
-                  <span>Taxa de resposta:</span>
-                  <span>{`${f.respondidos}/${f.total}`}</span>
+
+      {ordenadas.length === 0 ? (
+        <p className="text-[16px] text-muted">
+          Nenhum formulário encontrado para esta equipe.
+        </p>
+      ) : (
+        <ul className="flex flex-col gap-3">
+          {ordenadas.map((formulario) => {
+            const percentual = formulario.total
+              ? (formulario.respostas / formulario.total) * 100
+              : 0
+
+            return (
+              <li
+                key={formulario.id}
+                role="link"
+                tabIndex={0}
+                aria-label={`Abrir formulário ${formulario.titulo}`}
+                onClick={() => abrirFormulario(formulario.id)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault()
+                    abrirFormulario(formulario.id)
+                  }
+                }}
+                className={cx(
+                  'flex cursor-pointer flex-wrap items-center gap-x-6 gap-y-2 rounded-lg border border-card-line bg-white p-3',
+                  'transition duration-100',
+                  'hover:bg-card-hover hover:shadow-card-hover',
+                  'active:shadow-none',
+                )}
+              >
+                <div className="flex min-w-[240px] flex-1 flex-col gap-1">
+                  <div className="flex items-center gap-3">
+                    <StatusPill status={formulario.status} />
+
+                    <h3 className="min-w-0 text-[20px] font-semibold text-ink">
+                      {formulario.titulo}
+                    </h3>
+                  </div>
+
+                  <div className="flex max-w-[342px] flex-col gap-1">
+                    <div className="flex justify-between text-[16px] text-muted">
+                      <span>Taxa de resposta:</span>
+                      <span>
+                        {`${formulario.respostas}/${formulario.total}`}
+                      </span>
+                    </div>
+
+                    <div className="h-3 overflow-hidden rounded-lg bg-white shadow-[inset_0_0_1px_rgba(0,0,0,0.45)]">
+                      <div
+                        className="h-full rounded-lg bg-[#dcd8d0]"
+                        style={{ width: `${percentual}%` }}
+                      />
+                    </div>
+                  </div>
                 </div>
-                <div className="h-3 overflow-hidden rounded-lg bg-white shadow-[inset_0_0_1px_rgba(0,0,0,0.45)]">
-                  <div className="h-full rounded-lg bg-[#dcd8d0]" style={{ width: `${(f.respondidos / f.total) * 100}%` }} />
+
+                <div className="flex flex-wrap items-center gap-x-8 gap-y-2 text-center text-[16px] text-ink">
+                  <div>
+                    <p>Domínio médio</p>
+                    <p>{formulario.dominioMedio != null ? `${formulario.dominioMedio}%` : '—'}</p>
+                  </div>
+
+                  <div>
+                    <p>Maior dificuldade</p>
+                    {formulario.maiorDificuldade ? (
+                      <DifficultyLetter 
+                      letra={formulario.maiorDificuldade} 
+                      className="!font-normal"/>
+                    ) : (
+                      <p>—</p>
+                    )}
+                  </div>
+
+                  <div>
+                    <p>Data de criação</p>
+                    <p>{formulario.data}</p>
+                  </div>
+
+                  <OptionsMenu
+                    label={`Opções do formulário ${formulario.titulo}`}
+                    items={[
+                      {
+                        label: 'Editar',
+                        icon: 'edit',
+                        onClick: () => setFormularioEditando(formulario),
+                      },
+
+                      ...(formulario.status === 'ativo'
+                        ? [
+                            {
+                              label: 'Deixar inativo',
+                              icon: 'visibility_off',
+                              onClick: () => {
+                                atualizarFormulario(formulario.id, {
+                                  status: 'inativo',
+                                })
+                              },
+                            },
+                          ]
+                        : formulario.status === 'agendado'
+                          ? [
+                              {
+                                label: 'Postar agora',
+                                icon: 'publish',
+                                onClick: () => {
+                                  atualizarFormulario(formulario.id, {
+                                    status: 'ativo',
+                                  })
+                                },
+                              },
+                            ]
+                          : []),
+
+                      {
+                        label: 'Excluir',
+                        icon: 'delete',
+                        destructive: true,
+                        onClick: () => {
+                          removerFormulario(formulario.id)
+                        },
+                      },
+                    ]}
+                  />
                 </div>
-              </div>
-            </div>
-            <div className="flex flex-wrap items-center gap-x-8 gap-y-2 text-center text-[16px] text-ink">
-              <div>
-                <p>Domínio Médio</p>
-                <p>{f.dominio}%</p>
-              </div>
-              <div>
-                <p>Maior dificuldade</p>
-                <p>{f.dificuldade}</p>
-              </div>
-              <div>
-                <p>Data de criação</p>
-                <p>{f.criacao}</p>
-              </div>
-              <button type="button" aria-label="Opções do formulário" className="cursor-pointer font-inter text-[16px]">
-                ...
-              </button>
-            </div>
-          </li>
-        ))}
-      </ul>
+              </li>
+            )
+          })}
+        </ul>
+      )}
+
+      {formularioEditando && (
+        <EditarFormularioModal
+          formulario={formularioEditando}
+          onClose={() => setFormularioEditando(null)}
+        />
+      )}
     </>
   )
 }

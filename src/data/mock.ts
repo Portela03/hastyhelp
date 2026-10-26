@@ -37,6 +37,8 @@ export interface Formulario {
   total: number
   data: string
   perguntas: Pergunta[]
+  dominioMedio?: number
+  maiorDificuldade?: Dificuldade
 }
 
 export interface Pergunta {
@@ -149,22 +151,24 @@ export const PERGUNTAS: Pergunta[] = [
   },
 ]
 
-export const FORMULARIOS_INICIAIS: Formulario[] = [
-  { id: 'f1', titulo: 'Avaliação: Heurísticas de Nielsen e Usabilidade', status: 'agendado' },
-  { id: 'f2', titulo: 'Quiz: Arquitetura REST e Node.js', status: 'ativo' },
-  { id: 'f3', titulo: 'Pesquisa de Satisfação - Sprint 2', status: 'ativo' },
-  { id: 'f4', titulo: 'Prova Intermédia: Fundamentos de Git', status: 'inativo' },
-  { id: 'f5', titulo: 'Estruturação de Base de Dados (PostgreSQL)', status: 'rascunho' },
-].map(({ id, titulo, status }) => ({
+export const FORMULARIOS_INICIAIS: Formulario[] = ([
+  { id: 'f1', titulo: 'Avaliação: Heurísticas de Nielsen e Usabilidade', status: 'agendado', dominioMedio: 72, maiorDificuldade: 'P'},
+  { id: 'f2', titulo: 'Quiz: Arquitetura REST e Node.js', status: 'ativo', dominioMedio: 84, maiorDificuldade: 'I' },
+  { id: 'f3', titulo: 'Pesquisa de Satisfação - Sprint 2', status: 'ativo', dominioMedio: 25, maiorDificuldade: 'C' },
+  { id: 'f4', titulo: 'Prova Intermédia: Fundamentos de Git', status: 'inativo', dominioMedio: 90, maiorDificuldade: 'P' },
+  { id: 'f5', titulo: 'Estruturação de Base de Dados (PostgreSQL)', status: 'rascunho', dominioMedio: 60, maiorDificuldade: 'I' },
+]as const).map(({ id, titulo, status, dominioMedio, maiorDificuldade }) => ({
   id,
   titulo,
   equipeId: 'eng-soft',
   periodo: 'Período',
-  status: status as StatusFormulario,
+  status,
   respostas: 20,
   total: 30,
   data: '09/08/26',
   perguntas: PERGUNTAS,
+  dominioMedio,
+  maiorDificuldade,
 }))
 
 export const ALUNOS: Aluno[] = [

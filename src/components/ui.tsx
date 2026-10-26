@@ -25,6 +25,105 @@ export function Icon({ name, round = true, className }: { name: string; round?: 
   )
 }
 
+/* Menu 3 pontinhos */
+type OptionMenuItem = {
+  label: string
+  icon: string
+  onClick: () => void
+  destructive?: boolean
+}
+
+type OptionsMenuProps = {
+  label: string
+  items: OptionMenuItem[]
+  className?: string
+}
+
+export function OptionsMenu({ label, items, className }: OptionsMenuProps) {
+  const [aberto, setAberto] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!aberto) return
+
+    const fecharAoClicarFora = (event: MouseEvent) => {
+      if (!menuRef.current?.contains(event.target as Node)) {
+        setAberto(false)
+      }
+    }
+
+    const fecharComEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setAberto(false)
+      }
+    }
+
+    document.addEventListener('mousedown', fecharAoClicarFora)
+    document.addEventListener('keydown', fecharComEscape)
+
+    return () => {
+      document.removeEventListener('mousedown', fecharAoClicarFora)
+      document.removeEventListener('keydown', fecharComEscape)
+    }
+  }, [aberto])
+
+  const selecionar = (item: OptionMenuItem) => {
+    setAberto(false)
+    item.onClick()
+  }
+
+  return (
+    <div ref={menuRef} className={cx('relative shrink-0', className)}>
+      <button
+        type="button"
+        aria-label={label}
+        aria-haspopup="menu"
+        aria-expanded={aberto}
+        onClick={(event) => {
+          event.stopPropagation()
+          setAberto((valor) => !valor)
+        }}
+        className="flex cursor-pointer items-center justify-center rounded-full px-1 text-[20px] leading-none text-ink transition hover:bg-black/5 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ink"
+      >
+        <Icon name="more_horiz" />
+      </button>
+
+      {aberto && (
+        <div
+          role="menu"
+          aria-label={label}
+          className="absolute right-0 top-full z-30 mt-2 min-w-[200px] overflow-hidden rounded-xl border border-line-input bg-white py-1 shadow-[0_6px_18px_rgba(51,51,51,0.22)]"
+          onClick={(event) => event.stopPropagation()}
+        >
+          {items.map((item, index) => (
+            <div key={item.label}>
+              {index > 0 && item.destructive && (
+                <div className="mx-1 border-t border-line-input" />
+              )}
+
+              <button
+                type="button"
+                role="menuitem"
+                onClick={() => selecionar(item)}
+                className={cx(
+                  'flex w-full cursor-pointer items-center gap-3 px-4 py-2 text-left text-[16px] transition',
+                  'focus-visible:outline-2 focus-visible:outline-offset-[-2px] focus-visible:outline-ink',
+                  item.destructive
+                    ? 'text-red-500 hover:bg-red-50'
+                    : 'text-ink hover:bg-btn',
+                )}
+              >
+                <Icon name={item.icon} className="text-[18px]" />
+                <span>{item.label}</span>
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
 /* Botões */
 
 type BtnProps = ButtonHTMLAttributes<HTMLButtonElement> & { icon?: string; iconRound?: boolean }

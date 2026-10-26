@@ -3,7 +3,7 @@ import { Navigate, Outlet, useNavigate, useOutletContext, useParams } from 'reac
 import sortIcon from '../assets/figma/sort.svg'
 import { AppShell, Banner, DataTable, Section, TabBar, Toolbar } from '../components/layout'
 import { CriarFormularioModal, EditarFormularioModal } from '../components/modals'
-import { Avatar, ButtonPrimary, DifficultyLetter, FilterSelect, KpiCard, Panel, SearchBox, SortButton, StatusPill, TeamBadge, cx } from '../components/ui'
+import { Avatar, ButtonPrimary, DifficultyLetter, FilterSelect, KpiCard, Panel, SearchBox, SortButton, StatusPill, TeamBadge, cx, OptionsMenu } from '../components/ui'
 import { DIFICULDADES_GERAIS, OBSERVACOES, PERIODOS } from '../data/mock'
 import type { Formulario, StatusFormulario } from '../data/mock'
 import { useStore } from '../store'
@@ -79,7 +79,7 @@ export function Formularios() {
   const turmas = [...new Set(equipes.map((e) => e.nome))]
 
   return (
-    <AppShell action={<ButtonPrimary icon="add" onClick={() => setModal(true)}>Criar formulário</ButtonPrimary>}>
+    <AppShell action={<ButtonPrimary icon="add" onClick={() => setModal(true)} className="!text-[18px]">Criar formulário</ButtonPrimary>}>
       <Banner variante="lista" titulo="Formulários" subtitulo="Aqui você acompanha o desempenho de cada formulário e pode acessar seus rascunhos e agendamentos." />
       <Toolbar>
         <div className="flex flex-wrap items-center gap-3">
@@ -110,7 +110,7 @@ const TITULO_DETALHE = 'Teste Algebra Linear - Média, mediana e moda'
 
 export function FormularioDetalhe() {
   const { id } = useParams()
-  const { formularios, equipes } = useStore()
+  const { formularios, equipes, removerFormulario } = useStore()  
   const form = formularios.find((f) => f.id === id)
   const [editar, setEditar] = useState(false)
   if (!form) return <Navigate to="/avaliacoes" replace />
@@ -121,8 +121,37 @@ export function FormularioDetalhe() {
   return (
     <AppShell
       voltar={{ para: '/avaliacoes', rotulo: 'Avaliações' }}
-      onMore={() => setEditar(true)}
-      action={<ButtonPrimary icon="outgoing_mail" iconRound={false}>Notificar pendentes</ButtonPrimary>}
+      action={
+        <div className="flex items-center gap-3">
+          <ButtonPrimary icon="outgoing_mail" iconRound={false} className="!text-[18px]"> Notificar pendentes </ButtonPrimary>
+
+          <OptionsMenu
+            label={`Opções do formulário ${titulo}`}
+            items={[
+              {
+                label: 'Editar formulário',
+                icon: 'edit',
+                onClick: () => setEditar(true),
+              },
+              {
+                label: 'Ver como aluno',
+                icon: 'visibility',
+                onClick: () => {
+                  // implementar visualização do formulário como aluno
+                },
+              },
+              {
+                label: 'Excluir formulário',
+                icon: 'delete',
+                destructive: true,
+                onClick: () => {
+                  removerFormulario(form.id)
+                },
+              },
+            ]}
+          />
+        </div>
+      }
     >
       <Banner titulo={titulo} subtitulo={`Algebra Linear - ${equipe?.periodo ?? form.periodo}`}>
         <div className="flex flex-col items-center text-[20px]">

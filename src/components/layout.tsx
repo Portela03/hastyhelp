@@ -119,12 +119,10 @@ export function BotaoVoltar({ para, rotulo, className, esconderCssIcon = false }
 export function AppShell({
   children,
   action,
-  onMore,
   voltar,
 }: {
   children: ReactNode
   action?: ReactNode
-  onMore?: () => void
   voltar?: { para: string; rotulo: string }
 }) {
   const [aberto, setAberto] = useState(false)
@@ -159,9 +157,6 @@ export function AppShell({
               <img src={notification} alt="" className="size-full" />
             </button>
             {action}
-            <button type="button" aria-label="Mais opções" onClick={onMore} className="flex cursor-pointer text-[20px] text-black">
-              <Icon name="more_horiz" />
-            </button>
           </div>
         </header>
         <main className="flex flex-col gap-5 px-4 sm:px-10">{children}</main>
@@ -249,8 +244,8 @@ export function Toolbar({ children }: { children: ReactNode }) {
   return <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-white p-4">{children}</div>
 }
 
-export function Section({ titulo, children }: { titulo: string; children: ReactNode }) {
-  const [aberto, setAberto] = useState(true)
+export function Section({ titulo, children, inicialmenteAberta = true }: { titulo: string; children: ReactNode; inicialmenteAberta?: boolean }) {
+  const [aberto, setAberto] = useState(inicialmenteAberta)
   return (
     <section className="flex flex-col gap-3">
       <button
