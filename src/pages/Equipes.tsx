@@ -173,7 +173,6 @@ export function Equipes() {
 
 export function EquipeDetalhe() {
   const { id } = useParams()
-  const navigate = useNavigate()
   const { equipes, atualizarEquipe } = useStore()
   const equipe = equipes.find((e) => e.id === id)
   const [editar, setEditar] = useState(false)

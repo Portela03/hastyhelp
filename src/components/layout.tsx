@@ -119,12 +119,10 @@ export function BotaoVoltar({ para, rotulo, className, esconderCssIcon = false }
 export function AppShell({
   children,
   action,
-  onMore,
   voltar,
 }: {
   children: ReactNode
   action?: ReactNode
-  onMore?: () => void
   voltar?: { para: string; rotulo: string }
 }) {
   const [aberto, setAberto] = useState(false)
