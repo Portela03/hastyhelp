@@ -29,14 +29,16 @@ Escala usada: 12 (rótulo do menu, uppercase, tracking .24px) · 14 (filtros) ·
 | Token | Hex | Uso |
 |---|---|---|
 | `page` | `#fafafa` | fundo da área de conteúdo |
-| `sidebar` | `#a08d77` | fundo da sidebar (borda `#9f9082`) |
-| `sidebar-active` | `#5f574f` | aba ativa e divisor da sidebar |
-| `sidebar-label` | `#fffaf2` (70% opacidade) | "NAVEGAÇÃO" |
-| `topbar` | `#f7f2ec` | barra superior (borda `#e5ded4`) |
-| `banner-from` / `banner-to` | `#f7f2ec` → `#efe4d8` | gradiente horizontal do banner |
-| `line` | `#e5ded4` | bordas de banner/filtros |
-| `line-input` | `#dbc9b1` | bordas de filtros/inputs, fundo do card de perfil |
-| `btn-primary` | `#eee4da` | botão primário (borda `#333`, sombra sólida `2px 2px 0 #333`) |
+| `sidebar` | `#4f7a62` | fundo da sidebar (borda `#466d57`) |
+| `sidebar-line` | `#466d57` | borda da sidebar |
+| `sidebar-active` | `#2f4d3c` | aba ativa e divisor da sidebar |
+| `sidebar-hover` | `#436b55` | item da sidebar ao passar o mouse |
+| `sidebar-label` | `#f4faf5` (70% opacidade) | "NAVEGAÇÃO" |
+| `topbar` | `#f1f6f2` | barra superior (borda `#d6e2d8`) |
+| `banner-from` / `banner-to` | `#f1f6f2` → `#e0ebe2` | gradiente horizontal do banner |
+| `line` | `#d6e2d8` | bordas de banner/filtros |
+| `line-input` | `#bcd2c0` | bordas de filtros/inputs, fundo do card de perfil |
+| `btn-primary` | `#e4eee6` | botão primário (borda `#333`, sombra sólida `2px 2px 0 #333`) |
 | `ink` | `#333333` | texto principal |
 | `ink-muted` | `#666666` | texto secundário |
 | `card-secondary` | `#404040` | var `Cards/Secundario` |

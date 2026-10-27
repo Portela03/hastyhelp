@@ -184,7 +184,7 @@ function PerguntasEditor({ perguntas, onChange }: { perguntas: Pergunta[]; onCha
       <button
         type="button"
         onClick={adicionar}
-        className="mt-0.5 w-fit cursor-pointer rounded-lg border border-[#c9b8a0] bg-white px-2 py-1 text-[16px] text-[#a08d77]"
+        className="mt-0.5 w-fit cursor-pointer rounded-lg border border-line-input bg-white px-2 py-1 text-[16px] text-sidebar"
       >
         + Adicionar
       </button>
@@ -241,7 +241,7 @@ export function CriarFormularioModal({ onClose }: { onClose: () => void }) {
               <Field label="Data de publicação" name="data" placeholder="Ex: 24/09/26" value={data} onChange={(e) => setData(e.target.value)} disabled={postar} />
               <Field label="Horário" name="hora" placeholder="Ex: 00:00" value={hora} onChange={(e) => setHora(e.target.value)} disabled={postar} />
             </div>
-            <label className="flex w-fit cursor-pointer items-center gap-2 text-[16px] text-[#a08d77]">
+            <label className="flex w-fit cursor-pointer items-center gap-2 text-[16px] text-sidebar">
               <input type="checkbox" checked={postar} onChange={(e) => setPostar(e.target.checked)} className="size-4 cursor-pointer accent-sidebar" />
               Postar ao criar formulário
             </label>

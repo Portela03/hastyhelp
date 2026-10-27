@@ -12,7 +12,7 @@ Fonte única de verdade visual do projeto. **Toda tela nova (inclusive as do alu
 
 ## 1. Identidade visual
 
-Estilo **acolhedor e sóbrio**: paleta terrosa (bege/marrom) sobre fundo quase branco, cantos arredondados (8–16px), bordas finas e um único elemento "gráfico" marcante — o **botão com sombra sólida deslocada** (`2px 2px 0 #333`). Tipografia limpa (Instrument Sans). Sem gradientes fortes, sem sombras difusas pesadas.
+Estilo **acolhedor e sóbrio**: paleta verde sálvia sobre fundo quase branco, cantos arredondados (8–16px), bordas finas e um único elemento "gráfico" marcante — o **botão com sombra sólida deslocada** (`2px 2px 0 #333`). Tipografia limpa (Instrument Sans). Sem gradientes fortes, sem sombras difusas pesadas.
 
 ## 2. Tokens
 
@@ -20,23 +20,28 @@ Estilo **acolhedor e sóbrio**: paleta terrosa (bege/marrom) sobre fundo quase b
 | Token | Hex | Uso |
 |---|---|---|
 | `page` | `#fafafa` | fundo da área de conteúdo |
-| `sidebar` | `#a08d77` | fundo da sidebar (borda `sidebar-line` `#9f9082`) |
-| `sidebar-active` | `#5f574f` | item ativo do menu, divisor |
-| `sidebar-label` | `#fffaf2` | rótulo "NAVEGAÇÃO" (70% de opacidade) |
-| `topbar` | `#f7f2ec` | barra superior, cabeçalho de tabela, início do gradiente do banner |
-| `banner-to` | `#efe4d8` | fim do gradiente do banner |
-| `line` | `#e5ded4` | bordas de painéis, banner, abas |
-| `line-input` | `#dbc9b1` | bordas de filtros e linhas de lista |
-| `btn` | `#eee4da` | botão primário da barra superior |
-| `btn-brown` | `#dbc9b1` | botão principal de formulário/modal |
+| `sidebar` | `#4f7a62` | fundo da sidebar (borda `sidebar-line` `#466d57`) |
+| `sidebar-line` | `#466d57` | borda da sidebar |
+| `sidebar-active` | `#2f4d3c` | item ativo do menu, divisor |
+| `sidebar-hover` | `#436b55` | item da sidebar ao passar o mouse |
+| `sidebar-label` | `#f4faf5` | rótulo "NAVEGAÇÃO" (70% de opacidade) |
+| `topbar` | `#f1f6f2` | barra superior, cabeçalho de tabela, início do gradiente do banner |
+| `banner-to` | `#e0ebe2` | fim do gradiente do banner |
+| `line` | `#d6e2d8` | bordas de painéis, banner, abas |
+| `line-input` | `#bcd2c0` | bordas de filtros e linhas de lista |
+| `btn` | `#e4eee6` | botão primário da barra superior |
+| `btn-hover` | `#d0dfd3` | botão primário ao passar o mouse |
+| `btn-brown` | `#bcd2c0` | botão principal de formulário/modal |
+| `btn-brown-hover` | `#a3bda8` | botão principal ao passar o mouse |
 | `ink` | `#333333` | texto principal, borda e sombra do botão |
 | `muted` | `#666666` | texto secundário |
 | `placeholder` | `#878787` | placeholder, borda de input, texto somente-leitura |
 | `card-line` | `#b7b7b7` | borda dos cards de equipe |
 | `card-sec` | `#404040` | texto secundário dentro de cards |
+| `card-hover` | `#f3faf4` | fundo dos cards ao passar o mouse |
 | `professor` | `#15593c` | avatar do professor |
-| `panel` | `#faf9f7` | fundo de painéis/KPIs internos |
-| `track` | `#e7e1d9` | trilho de barras de progresso |
+| `panel` | `#f8fbf8` | fundo de painéis/KPIs internos |
+| `track` | `#dfe8e1` | trilho de barras de progresso |
 | `ok` | `#34785c` | valor positivo / barra destacada |
 | `diff-i` `diff-p` `diff-c` | `#5ab3d4` `#a08d77` `#ee5e5e` | dificuldade **I / P / C** |
 | `bar-gray` | `#bebebe` | barras sem dado ("??%") |
@@ -149,6 +154,4 @@ Login escolhe o papel ("Sou professor" / "Sou aluno"); `Protegida` em `App.tsx` 
 - **Ícones**: `text-[Npx]` na classe do `Icon` (aplicado inline, porque o CSS do Google Fonts não usa camadas do Tailwind).
 - **Não** editar textos do Figma que estejam corretos; corrigir acentos ("Móveis", "Domínio") é permitido.
 - **Antes de fechar uma tela**: comparar com o screenshot do Figma (1440×810) e conferir a versão mobile.
-
-
 
