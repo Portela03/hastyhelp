@@ -11,7 +11,7 @@ import { useStore } from '../store'
 function AuthLayout({ titulo, children, voltarPara }: { titulo: string; children: ReactNode; voltarPara?: string }) {
   return (
     <div className="relative flex min-h-screen items-center justify-center p-4">
-      <img src={bg} alt="" className="pointer-events-none absolute inset-0 size-full object-cover" />
+      <img src={bg} alt="" className="pointer-events-none absolute inset-0 size-full object-cover saturate-[.45] hue-rotate-[65deg] brightness-[1.02]" />
       <div className="absolute inset-0 bg-black/10" />
       <BotaoVoltar para={voltarPara} rotulo={voltarPara ? 'o login' : undefined} className="!gap-1 absolute left-4 top-4 z-10 px-3 border shadow-btn border-ink bg-btn rounded-lg hover:bg-btn-hover" esconderCssIcon = {true}/>
       <div className="relative flex w-full max-w-[460px] flex-col items-center gap-8 rounded-lg bg-white px-9 py-8">
