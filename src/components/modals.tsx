@@ -529,10 +529,12 @@ export function PerfilModal({ onClose }: { onClose: () => void }) {
           <select
             id="tema-perfil"
             value={rascunho.tema}
-            onChange={(event) => atualizar('tema', event.target.value as 'claro')}
+            onChange={(event) => atualizar('tema', event.target.value as 'claro' | 'escuro' | 'alto-contraste')}
             className="w-full cursor-pointer rounded-lg border border-placeholder bg-white px-3 py-2 text-[18px] text-placeholder outline-none focus-visible:border-ink sm:w-[238px]"
           >
             <option value="claro">Claro</option>
+            <option value="escuro">Escuro</option>
+            <option value="alto-contraste">Alto-contraste</option>
           </select>
         </div>
 
@@ -540,10 +542,6 @@ export function PerfilModal({ onClose }: { onClose: () => void }) {
           <ButtonBrown type="button" onClick={concluir}>
             Concluir
           </ButtonBrown>
-
-          <ButtonGhost type="button" onClick={onClose}>
-            Cancelar
-          </ButtonGhost>
         </div>
 
         <button

@@ -64,7 +64,7 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     metricasTrimestrais: true,
     metricasSemestrais: true,
     acessibilidade: true,
-    tema: 'claro',
+    tema: 'claro' ,
   })
 
   useEffect(() => {
@@ -73,6 +73,10 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       !preferencias.acessibilidade,
     )
   }, [preferencias.acessibilidade])
+
+  useEffect(() => {
+    document.body.dataset.tema = preferencias.tema
+  }, [preferencias.tema])
 
   const entrar = useCallback((papel: Papel) => {
     const nova: Sessao = { papel, nome: papel === 'aluno' ? ALUNO_LOGADO : PROFESSOR_LOGADO }
@@ -175,6 +179,6 @@ export interface PreferenciasPerfil {
   metricasTrimestrais: boolean
   metricasSemestrais: boolean
   acessibilidade: boolean
-  tema: 'claro'
+  tema: 'claro' | 'escuro' | 'alto-contraste'
 }
 

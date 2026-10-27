@@ -84,3 +84,409 @@ body.ocultar-widget-acessibilidade .uwy {
   visibility: hidden !important;
   pointer-events: none !important;
 }
+
+
+/***********************
+Paleta Escuro
+***********************/
+body[data-tema='escuro'] {
+  --color-page: #0d0d0f;
+
+  --color-sidebar: #0b0b10;
+  --color-sidebar-line: #30243f;
+  --color-sidebar-active: #5b3b82;
+  --color-sidebar-hover: #241a31;
+  --color-sidebar-label: #f5f0ff;
+
+  --color-topbar: #191922;
+  --color-banner-to: #1b1622;
+
+  --color-line: #2b2b31;
+  --color-line-input: #49345f;
+
+  --color-btn: #202024;
+  --color-btn-hover: #2c2634;
+  --color-btn-brown: #4b3265;
+  --color-btn-brown-hover: #60427e;
+
+  --color-ink: #F1EFF8;
+  --color-muted: #BDB9D0;
+  --color-placeholder: #85818d;
+
+  --color-card-line: #35343b;
+  --color-card-sec: #d3d0d8;
+  --color-card-hover: #1c1724;
+
+  --color-professor: #9cdbbc;
+  --color-panel: #121218;
+  --color-track: #292832;
+  --color-ok: #8d5fc2;
+
+  --color-diff-i: #70c4df;
+  --color-diff-p: #9f82bc;
+  --color-diff-c: #f17979;
+  --color-bar-gray: #69656f;
+
+  --shadow-card: 0.5px 0.5px 0 #000000;
+  --shadow-card-hover: 1px 1px 0 #000000;
+  --shadow-btn: 2px 2px 0 #000000;
+  --shadow-btn-hover: 3px 3px 0 #000000;
+}
+
+body[data-tema='escuro'] .bg-white {
+  background-color: var(--color-panel) !important;
+  color: var(--color-ink);
+}
+
+body[data-tema='escuro'] .toolbar {
+  background-color: var(--color-panel) !important;
+  border-color: var(--color-line) !important;
+  color: var(--color-ink);
+}
+
+body[data-tema='escuro'] .toolbar input,
+body[data-tema='escuro'] .toolbar select {
+  background-color: transparent;
+  border-color: transparent;
+  color: var(--color-ink);
+}
+
+body[data-tema='escuro'] .toolbar button {
+  background-color: var(--color-panel);
+  border-color: var(--color-line-input);
+  color: var(--color-ink);
+}
+
+body[data-tema='escuro'] .toolbar input::placeholder {
+  color: var(--color-placeholder);
+}
+
+body[data-tema='escuro'] .toolbar option {
+  background-color: var(--color-panel);
+  color: var(--color-ink);
+}
+
+body[data-tema='escuro'] .banner {
+  background: linear-gradient(
+    105deg,
+    #37314d 0%,
+    #2c3047 48%,
+    #203448 100%
+  ) !important;
+  border-color: #3b3c58;
+  box-shadow:
+    0 4px 12px rgba(0, 0, 0, 0.35),
+    inset 0 1px 4px rgba(255, 255, 255, 0.08);
+}
+
+body[data-tema='escuro'] .banner-blob {
+  filter: brightness(0) saturate(100%)
+    invert(24%)
+    sepia(22%)
+    saturate(1050%)
+    hue-rotate(186deg)
+    brightness(88%)
+    contrast(88%);
+}
+
+body[data-tema='escuro']
+  button[aria-label='Notificações']
+  img {
+  filter: brightness(0) invert(1) !important;
+}
+
+body[data-tema='escuro'] .toolbar-sort-icon {
+  filter: brightness(0) invert(1) !important;
+}
+
+
+/***********************
+Paleta Alto Contraste
+***********************/
+body[data-tema='alto-contraste'] {
+  --color-page: #000000;
+  --color-sidebar: #000000;
+  --color-sidebar-line: #ffffff;
+  --color-sidebar-active: #50d0a0;
+  --color-sidebar-hover: #1d1d1d;
+  --color-sidebar-label: #ffffff;
+
+  --color-topbar: #000000;
+  --color-banner-to: #000000;
+
+  --color-line: #ffffff;
+  --color-line-input: #ffffff;
+
+  --color-btn: #000000;
+  --color-btn-hover: #1d1d1d;
+  --color-btn-brown: #000000;
+  --color-btn-brown-hover: #1d1d1d;
+
+  --color-ink: #ffffff;
+  --color-muted: #ffffff;
+  --color-placeholder: #ffffff;
+
+  --color-card-line: #ffffff;
+  --color-card-sec: #ffffff;
+  --color-card-hover: #1d1d1d;
+
+  --color-professor: #50d0a0;
+  --color-panel: #000000;
+  --color-track: #ffffff;
+  --color-ok: #50d0a0;
+
+  --color-diff-i: #70d7ff;
+  --color-diff-p: #ffff00;
+  --color-diff-c: #ff7070;
+  --color-bar-gray: #ffffff;
+
+  --shadow-card: 2px 2px 0 #ffffff;
+  --shadow-card-hover: 3px 3px 0 #50d0a0;
+  --shadow-btn: 2px 2px 0 #ffffff;
+  --shadow-btn-hover: 3px 3px 0 #50d0a0;
+}
+
+body[data-tema='alto-contraste'] .bg-white,
+body[data-tema='alto-contraste'] .bg-panel,
+body[data-tema='alto-contraste'] .toolbar {
+  background-color: #000000 !important;
+  color: #ffffff !important;
+  border-color: #ffffff !important;
+}
+
+body[data-tema='alto-contraste'] input,
+body[data-tema='alto-contraste'] select,
+body[data-tema='alto-contraste'] textarea,
+body[data-tema='alto-contraste'] button {
+  background-color: #000000;
+  color: #ffffff;
+  border-color: #ffffff;
+}
+
+body[data-tema='alto-contraste'] input::placeholder,
+body[data-tema='alto-contraste'] textarea::placeholder {
+  color: #ffffff;
+  opacity: 1;
+}
+
+body[data-tema='alto-contraste'] option {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+body[data-tema='alto-contraste'] .banner {
+  background: #000000 !important;
+  background-image: none !important;
+  border: 1px solid #ffffff !important;
+  color: #ffffff !important;
+  box-shadow: none !important;
+}
+
+body[data-tema='alto-contraste'] .banner h1,
+body[data-tema='alto-contraste'] .banner p {
+  background: transparent !important;
+  color: #50d0a0 !important;
+}
+
+body[data-tema='alto-contraste'] .banner-blob {
+  display: none !important;
+}
+
+body[data-tema='alto-contraste'] a,
+body[data-tema='alto-contraste'] button:hover,
+body[data-tema='alto-contraste'] button:focus-visible,
+body[data-tema='alto-contraste'] [aria-current='page'] {
+  color: #50d0a0 !important;
+}
+
+body[data-tema='alto-contraste']
+  nav[aria-label='Navegação principal']
+  a[aria-current='page'],
+body[data-tema='alto-contraste']
+  nav[aria-label='Navegação principal']
+  a[aria-current='page']
+  * {
+  color: #000000 !important;
+}
+
+
+
+body[data-tema='alto-contraste'] button:focus-visible,
+body[data-tema='alto-contraste'] input:focus-visible,
+body[data-tema='alto-contraste'] select:focus-visible,
+body[data-tema='alto-contraste'] textarea:focus-visible {
+  outline: 3px solid #50d0a0 !important;
+  outline-offset: 3px;
+}
+
+body[data-tema='alto-contraste'] .toolbar label {
+  overflow: hidden;
+  border-radius: 0.5rem;
+  background-color: #000000 !important;
+  border-color: #ffffff !important;
+  color: #ffffff !important;
+}
+
+body[data-tema='alto-contraste'] .toolbar label select,
+body[data-tema='alto-contraste'] .toolbar label input {
+  min-width: 0;
+  border: 0 !important;
+  border-radius: inherit;
+  background-color: transparent !important;
+  color: #ffffff !important;
+  outline: none;
+}
+
+body[data-tema='alto-contraste'] .toolbar label select:focus-visible,
+body[data-tema='alto-contraste'] .toolbar label input:focus-visible {
+  outline: 3px solid #50d0a0 !important;
+  outline-offset: -3px;
+}
+
+body[data-tema='alto-contraste']
+  button[aria-label='Notificações']
+  img {
+  filter: brightness(0) invert(1) !important;
+}
+
+body[data-tema='alto-contraste'] .toolbar-sort-icon {
+  filter: brightness(0) invert(1) !important;
+}
+
+body[data-tema='alto-contraste'] .sidebar-divider {
+  display: none !important;
+}
+
+body[data-tema='alto-contraste'] [role='link'] {
+  background-color: #000000 !important;
+  border-color: #ffff00 !important;
+  color: #ffff00 !important;
+}
+
+body[data-tema='alto-contraste'] [role='link'] * {
+  color: #ffff00 !important;
+}
+
+body[data-tema='alto-contraste'] [role='link']:hover,
+body[data-tema='alto-contraste'] [role='link']:focus-visible {
+  background-color: #1a1a1a !important;
+  border-color: #ffff00 !important;
+  color: #ffff00 !important;
+}
+
+body[data-tema='alto-contraste'] [role='link']:hover *,
+body[data-tema='alto-contraste'] [role='link']:focus-visible * {
+  color: #ffff00 !important;
+}
+
+body[data-tema='alto-contraste'] [role='link']:focus-visible {
+  outline: 3px solid #50d0a0 !important;
+  outline-offset: 3px;
+}
+
+body[data-tema='alto-contraste'] .form-card {
+  background-color: #000000 !important;
+  border-color: #ffffff !important;
+  color: #ffff00 !important;
+  box-shadow: none !important;
+}
+
+body[data-tema='alto-contraste'] .form-card:hover,
+body[data-tema='alto-contraste'] .form-card:focus-visible {
+  background-color: #000000 !important;
+  border-color: #ffff00 !important;
+  color: #ffff00 !important;
+}
+
+body[data-tema='alto-contraste'] .form-card h2,
+body[data-tema='alto-contraste'] .form-card p,
+body[data-tema='alto-contraste'] .form-card span {
+  color: #ffff00 !important;
+}
+
+body[data-tema='alto-contraste'] .form-team-badge > div {
+  background-color: #000000 !important;
+  color: #ffff00 !important;
+}
+
+body[data-tema='alto-contraste'] .form-status span {
+  background-color: #000000 !important;
+  border-color: #ffffff !important;
+  color: #ffff00 !important;
+}
+
+body[data-tema='alto-contraste'] .form-status span span {
+  color: #ffff00 !important;
+}
+
+body[data-tema='alto-contraste'] .form-status img {
+  filter: none !important;
+}
+
+body[data-tema='alto-contraste'] .equipe-team-badge > div {
+  background-color: #000000 !important;
+  color: #ffff00 !important;
+}
+
+body[data-tema='alto-contraste'] .team-card {
+  background-color: #000000 !important;
+  border-color: #ffffff !important;
+  color: #ffff00 !important;
+  box-shadow: none !important;
+}
+
+body[data-tema='alto-contraste'] .team-card * {
+  color: #ffff00 !important;
+}
+
+body[data-tema='alto-contraste'] .team-card:hover,
+body[data-tema='alto-contraste'] .team-card:focus-visible {
+  background-color: #000000 !important;
+  border-color: #ffff00 !important;
+  color: #ffff00 !important;
+  box-shadow: none !important;
+}
+
+body[data-tema='alto-contraste'] .team-card:hover *,
+body[data-tema='alto-contraste'] .team-card:focus-visible * {
+  color: #ffff00 !important;
+}
+
+
+
+
+
+
+
+
+
+
+
+body[class*='contrast'] .banner,
+body[class*='high-contrast'] .banner,
+body[data-uw-contrast] .banner {
+  background: #000 !important;
+  background-image: none !important;
+  border-color: #fff !important;
+  color: #fff !important;
+}
+
+body[class*='contrast'] .banner h1,
+body[class*='contrast'] .banner p,
+body[class*='high-contrast'] .banner h1,
+body[class*='high-contrast'] .banner p,
+body[data-uw-contrast] .banner h1,
+body[data-uw-contrast] .banner p {
+  background: transparent !important;
+  color: #fff !important;
+}
+
+.banner[style*='background-color: rgb(0, 0, 0)'] {
+  background-color: #000 !important;
+  background-image: none !important;
+  border-color: #fff !important;
+}
+
+.banner[style*='background-color: rgb(0, 0, 0)'] .banner-blob {
+  display: none !important;
+}

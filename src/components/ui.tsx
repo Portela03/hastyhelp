@@ -440,7 +440,7 @@ export function SortButton({ label, onClick, icon }: { label: string; onClick?: 
       onClick={onClick}
       className="flex cursor-pointer items-center gap-2 rounded-lg border border-line-input bg-white px-3 py-2 text-[14px] text-ink"
     >
-      <img src={icon} alt="" className="size-[14px]" />
+      <img src={icon} alt="" className="toolbar-sort-icon size-[14px]" />
       {label}
     </button>
   )

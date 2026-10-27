@@ -1,8 +1,8 @@
 export const CORES_EQUIPE = [
-  '#8fcbc5',
+  '#62B7D7',
   '#f3ae8d',
   '#f27c7e',
-  '#8df3b6',
+  '#6AD890',
   '#df8bb3',
   '#b98fcb',
 ] as const
@@ -66,7 +66,7 @@ export const EQUIPES_INICIAIS: Equipe[] = [
     id: 'dsm-web',
     nome: 'Desenvolvimento Web Moderno',
     sigla: 'DM',
-    cor: '#8df3b6', 
+    cor: '#6AD890', 
     periodo: '2026/02',
     docente: 'Carlos Eduardo',
     totalAlunos: 35,
@@ -105,7 +105,7 @@ export const EQUIPES_INICIAIS: Equipe[] = [
     id: `pdm-${k}`,
     nome: 'Programação para Dispositivos Móveis',
     sigla: 'PD',
-    cor: '#8fcbc5',
+    cor: '#62B7D7',
     periodo: i % 2 ? '2026/01' : '2026/02',
     docente: 'Wellington Fernando Bastos',
     totalAlunos: 30,

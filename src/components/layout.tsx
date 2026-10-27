@@ -64,7 +64,7 @@ function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         </nav>
 
         <div className="flex flex-col gap-3">
-          <div className="h-px bg-sidebar-active" />
+          <div className="sidebar-divider h-px bg-sidebar-active" />
 
           <button
             type="button"
@@ -199,17 +199,17 @@ export function Banner({
   variante?: 'padrao' | 'lista'
 }) {
   return (
-    <section className="relative flex min-h-[100px] flex-col items-stretch justify-between gap-4 overflow-hidden sm:flex-row sm:items-center sm:gap-6 rounded-2xl border border-line bg-linear-to-r from-topbar to-banner-to px-6 py-5 shadow-banner">
+    <section className="banner relative flex min-h-[100px] flex-col items-stretch justify-between gap-4 overflow-hidden sm:flex-row sm:items-center sm:gap-6 rounded-2xl border border-line bg-linear-to-r from-topbar to-banner-to px-6 py-5 shadow-banner">
       {variante === 'padrao' ? (
         <>
-          <img src={blob1} alt="" className="pointer-events-none absolute -left-[41px] -top-[21px] size-[180px]" />
-          <img src={blob2} alt="" className="pointer-events-none absolute -top-[31px] right-[81px] hidden size-[140px] md:block" />
+          <img src={blob1} alt="" className="banner-blob pointer-events-none absolute -left-[41px] -top-[21px] size-[180px]" />
+          <img src={blob2} alt="" className="banner-blob pointer-events-none absolute -top-[31px] right-[81px] hidden size-[140px] md:block" />
         </>
       ) : (
         <>
-          <img src={blob1} alt="" className="pointer-events-none absolute left-[310px] top-[27px] hidden size-[180px] md:block" />
-          <img src={blob2} alt="" className="pointer-events-none absolute -top-[71px] right-[17px] hidden size-[140px] md:block" />
-          <img src={blob2} alt="" className="pointer-events-none absolute -top-[91px] left-[268px] hidden size-[140px] md:block" />
+          <img src={blob1} alt="" className="banner-blob pointer-events-none absolute left-[310px] top-[27px] hidden size-[180px] md:block" />
+          <img src={blob2} alt="" className="banner-blob pointer-events-none absolute -top-[71px] right-[17px] hidden size-[140px] md:block" />
+          <img src={blob2} alt="" className="banner-blob pointer-events-none absolute -top-[91px] left-[268px] hidden size-[140px] md:block" />
         </>
       )}
       <div className="relative flex min-w-0 items-center gap-4">
@@ -261,7 +261,7 @@ export function TabBar({ tabs }: { tabs: Array<{ to: string; label: string; end?
 }
 
 export function Toolbar({ children }: { children: ReactNode }) {
-  return <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-white p-4">{children}</div>
+  return (<div className="toolbar flex flex-wrap items-center justify-between gap-3 rounded-xl border border-line bg-white p-4"> {children} </div>)
 }
 
 export function Section({ titulo, children, inicialmenteAberta = true }: { titulo: string; children: ReactNode; inicialmenteAberta?: boolean }) {

@@ -30,7 +30,7 @@ function TeamCard({ equipe, onEditar, onAlternarVisibilidade }: TeamCardProps) {
       onClick={abrir}
       onKeyDown={(e) => e.key === 'Enter' && abrir()}
       className={cx(
-        "flex cursor-pointer flex-col gap-5 self-start rounded-lg border border-card-line bg-white p-3 drop-shadow-card",
+        "team-card flex cursor-pointer flex-col gap-5 self-start rounded-lg border border-card-line bg-white p-3 drop-shadow-card",
         "transition duration-100",
         "hover:bg-card-hover hover:shadow-card-hover",
         "active:shadow-none"
@@ -38,7 +38,14 @@ function TeamCard({ equipe, onEditar, onAlternarVisibilidade }: TeamCardProps) {
     >
       <div className="flex flex-col gap-2">
         <div className="flex items-center gap-2.5">
-          <TeamBadge sigla={equipe.sigla} cor={equipe.cor} size={60} fontSize={30} />
+          <span className="equipe-team-badge">
+            <TeamBadge
+              sigla={equipe.sigla}
+              cor={equipe.cor}
+              size={68}
+              fontSize={32}
+            />
+          </span>
           <h2 className="min-w-0 flex-1 text-[16px] font-semibold tracking-[-0.64px] text-ink">{equipe.nome}</h2>
           <OptionsMenu
             label={`Opções da equipe ${equipe.nome}`}

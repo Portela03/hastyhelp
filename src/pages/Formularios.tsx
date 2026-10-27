@@ -26,13 +26,22 @@ function FormRow({ form }: { form: Formulario }) {
       onClick={abrir}
       onKeyDown={(e) => e.key === 'Enter' && abrir()}
       className={cx(
-        "flex cursor-pointer items-center gap-3 rounded-lg border border-card-line bg-white p-3",
+        "form-card flex cursor-pointer items-center gap-3 rounded-lg border border-card-line bg-white p-3",
         "transition duration-100",
         "hover:bg-card-hover hover:shadow-card-hover",
         "active:shadow-none"
       )}
     >
-      {!rascunho && equipe && <TeamBadge sigla={equipe.sigla} cor={equipe.cor} size={68} fontSize={32} />}
+      {!rascunho && equipe && (
+        <span className="form-team-badge">
+          <TeamBadge
+            sigla={equipe.sigla}
+            cor={equipe.cor}
+            size={68}
+            fontSize={32}
+          />
+        </span>
+      )}      
       <div className="flex min-w-0 flex-1 items-stretch justify-between gap-3">
         <div className="flex min-w-0 flex-col justify-center gap-1">
           <h2 className="text-[16px] font-semibold text-ink">{form.titulo}</h2>
@@ -50,7 +59,9 @@ function FormRow({ form }: { form: Formulario }) {
           )}
         </div>
         <div className={cx('flex shrink-0 flex-col items-end', rascunho ? 'justify-center' : 'justify-between')}>
-          <StatusPill status={form.status} />
+          <span className="form-status">
+            <StatusPill status={form.status} />
+          </span>
           {!rascunho && <span className="text-[16px] text-ink">{form.data}</span>}
         </div>
       </div>
