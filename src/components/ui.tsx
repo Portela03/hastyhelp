@@ -7,6 +7,7 @@ import dotRascunho from '../assets/figma/dot-rascunho.svg'
 import { ROTULO_STATUS_ALUNO } from '../data/aluno'
 import type { StatusAluno } from '../data/aluno'
 import type { StatusFormulario } from '../data/mock'
+import { createPortal } from 'react-dom'
 
 export function cx(...c: Array<string | false | null | undefined>) {
   return c.filter(Boolean).join(' ')
@@ -439,7 +440,7 @@ export function SortButton({ label, onClick, icon }: { label: string; onClick?: 
       onClick={onClick}
       className="flex cursor-pointer items-center gap-2 rounded-lg border border-line-input bg-white px-3 py-2 text-[14px] text-ink"
     >
-      <img src={icon} alt="" className="size-[14px]" />
+      <img src={icon} alt="" className="toolbar-sort-icon size-[14px]" />
       {label}
     </button>
   )
@@ -473,9 +474,9 @@ export function Modal({
       prev?.focus()
     }
   }, [onClose])
-  return (
+    return createPortal(
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/45 p-4 backdrop-blur-[1px]"
+      className="fixed inset-0 z-[9999] flex items-start justify-center overflow-y-auto bg-black/45 p-4 backdrop-blur-[1px]"
       onMouseDown={(e) => e.target === e.currentTarget && onClose()}
     >
       <div
@@ -490,9 +491,11 @@ export function Modal({
           <Icon name={icon} round={false} />
           {title}
         </h2>
+
         {children}
       </div>
-    </div>
+    </div>,
+    document.body,
   )
 }
 
