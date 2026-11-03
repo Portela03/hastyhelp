@@ -6,7 +6,7 @@ import dotI from '../assets/figma/dot-i.svg'
 import dotP from '../assets/figma/dot-p.svg'
 import sortIcon from '../assets/figma/sort.svg'
 import { AppShell, Banner, BannerStat, DataTable, Section, TabBar, Toolbar } from '../components/layout'
-import { CriarEquipeModal, EditarEquipeModal, EditarFormularioModal } from '../components/modals'
+import { AdicionarMembrosModal, ExcluirModal, CriarEquipeModal, EditarEquipeModal, EditarFormularioModal } from '../components/modals'
 import { Avatar, ButtonPrimary, DifficultyLetter, FilterSelect, KpiCard, Panel, ProgressBar, SearchBox, StatusPill, SortButton, TeamBadge, cx, OptionsMenu } from '../components/ui'
 import { ALUNOS, PERIODOS } from '../data/mock'
 import type { Equipe, Formulario } from '../data/mock'
@@ -17,9 +17,11 @@ type TeamCardProps = {
   equipe: Equipe
   onEditar: (equipe: Equipe) => void
   onAlternarVisibilidade: (equipe: Equipe) => void
+  onExcluir: (equipe: Equipe) => void
+  onAdicionarMembros: (equipe: Equipe) => void
 }
 
-function TeamCard({ equipe, onEditar, onAlternarVisibilidade }: TeamCardProps) {
+function TeamCard({ equipe, onEditar, onAlternarVisibilidade, onExcluir, onAdicionarMembros }: TeamCardProps) {
   const navigate = useNavigate()
   const abrir = () => navigate(`/equipes/${equipe.id}`)
   return (
@@ -56,6 +58,11 @@ function TeamCard({ equipe, onEditar, onAlternarVisibilidade }: TeamCardProps) {
                 onClick: () => onEditar(equipe),
               },
               {
+                label: 'Adicionar membros',
+                icon: 'person_add',
+                onClick: () => onAdicionarMembros(equipe),
+              },
+              {
                 label: equipe.oculta ? 'Desocultar' : 'Ocultar',
                 icon: equipe.oculta ? 'visibility' : 'visibility_off',
                 onClick: () => onAlternarVisibilidade(equipe),
@@ -64,9 +71,7 @@ function TeamCard({ equipe, onEditar, onAlternarVisibilidade }: TeamCardProps) {
                 label: 'Excluir',
                 icon: 'delete',
                 destructive: true,
-                onClick: () => {
-                  // Excluir equipe
-                },
+                onClick: () => onExcluir(equipe),
               },
             ]}
           />
@@ -85,12 +90,14 @@ function TeamCard({ equipe, onEditar, onAlternarVisibilidade }: TeamCardProps) {
 }
 
 export function Equipes() {
-  const { equipes, atualizarEquipe } = useStore()  
+  const { equipes, atualizarEquipe, removerEquipe } = useStore()  
   const [modal, setModal] = useState(false)
   const [busca, setBusca] = useState('')
   const [periodo, setPeriodo] = useState('')
   const [asc, setAsc] = useState(true)
   const [equipeEditando, setEquipeEditando] = useState<Equipe | null>(null)
+  const [equipeExcluindo, setEquipeExcluindo] = useState<Equipe | null>(null)
+  const [equipeAdicionandoMembros, setEquipeAdicionandoMembros] = useState<Equipe | null>(null)
 
   const equipesVisiveis = useMemo(() => {
     return equipes
@@ -139,6 +146,9 @@ export function Equipes() {
                 equipe={equipe}
                 onEditar={setEquipeEditando}
                 onAlternarVisibilidade={alternarVisibilidade}
+                onExcluir={setEquipeExcluindo}
+                onAdicionarMembros={setEquipeAdicionandoMembros}
+
               />
             ))}
           </div>
@@ -149,27 +159,47 @@ export function Equipes() {
       )}
 
       {equipesOcultas.length > 0 && (
-      <Section
-        titulo="Equipes ocultas"
-        inicialmenteAberta={false}
-      >
-        <div className="grid grid-cols-1 gap-x-4 gap-y-3 md:grid-cols-2 xl:grid-cols-3">
-          {equipesOcultas.map((equipe) => (
-            <TeamCard
-              key={equipe.id}
-              equipe={equipe}
-              onEditar={setEquipeEditando}
-              onAlternarVisibilidade={alternarVisibilidade}
-            />
-          ))}
-        </div>
-      </Section>
-)}
+        <Section
+          titulo="Equipes ocultas"
+          inicialmenteAberta={false}
+        >
+          <div className="grid grid-cols-1 gap-x-4 gap-y-3 md:grid-cols-2 xl:grid-cols-3">
+            {equipesOcultas.map((equipe) => (
+              <TeamCard
+                key={equipe.id}
+                equipe={equipe}
+                onEditar={setEquipeEditando}
+                onAlternarVisibilidade={alternarVisibilidade}
+                onExcluir={setEquipeExcluindo}
+                onAdicionarMembros={setEquipeAdicionandoMembros}
+              />
+            ))}
+          </div>
+        </Section>
+      )}
 
       {equipeEditando && (
         <EditarEquipeModal
           equipe={equipeEditando}
           onClose={() => setEquipeEditando(null)}
+        />
+      )}
+
+      {equipeExcluindo && (
+        <ExcluirModal
+          tipo="equipe"
+          nome={equipeExcluindo.nome}
+          onClose={() => setEquipeExcluindo(null)}
+          onConfirmar={() => {
+            removerEquipe(equipeExcluindo.id)
+            setEquipeExcluindo(null)
+          }}
+        />
+      )}
+
+      {equipeAdicionandoMembros && (
+        <AdicionarMembrosModal
+          onClose={() => setEquipeAdicionandoMembros(null)}
         />
       )}
     </AppShell>
@@ -180,9 +210,12 @@ export function Equipes() {
 
 export function EquipeDetalhe() {
   const { id } = useParams()
-  const { equipes, atualizarEquipe } = useStore()
+  const navigate = useNavigate()
+  const { equipes, atualizarEquipe, removerEquipe } = useStore()
   const equipe = equipes.find((e) => e.id === id)
   const [editar, setEditar] = useState(false)
+  const [excluir, setExcluir] = useState(false)
+  const [adicionarMembros, setAdicionarMembros] = useState(false)
   if (!equipe) return <Navigate to="/equipes" replace />
 
   const base = `/equipes/${equipe.id}`
@@ -197,6 +230,11 @@ export function EquipeDetalhe() {
             label={`Opções da equipe ${equipe.nome}`}
             items={[
               {
+                label: 'Adicionar membros',
+                icon: 'person_add',
+                onClick: () => setAdicionarMembros(true),
+              },
+              {
                 label: equipe.oculta ? 'Desocultar equipe' : 'Ocultar equipe',
                 icon: equipe.oculta ? 'visibility' : 'visibility_off',
                 onClick: () => {
@@ -209,9 +247,7 @@ export function EquipeDetalhe() {
                 label: 'Excluir equipe',
                 icon: 'delete',
                 destructive: true,
-                onClick: () => {
-                  // implementar exclusão
-                },
+                onClick: () => setExcluir(true),
               },
             ]}
           />
@@ -235,6 +271,24 @@ export function EquipeDetalhe() {
       />
       <Outlet context={equipe} />
       {editar && <EditarEquipeModal equipe={equipe} onClose={() => setEditar(false)} />}
+
+      {excluir && (
+        <ExcluirModal
+          tipo="equipe"
+          nome={equipe.nome}
+          onClose={() => setExcluir(false)}
+          onConfirmar={() => {
+            removerEquipe(equipe.id)
+            navigate('/equipes', { replace: true })
+          }}
+        />
+      )}
+
+      {adicionarMembros && (
+        <AdicionarMembrosModal
+          onClose={() => setAdicionarMembros(false)}
+        />
+      )}
     </AppShell>
   )
 }
@@ -251,6 +305,7 @@ export function EquipeFormularios() {
   const [status, setStatus] = useState('')
   const [asc, setAsc] = useState(false)
   const [formularioEditando, setFormularioEditando] = useState<Formulario | null>(null)
+  const [formularioExcluindo, setFormularioExcluindo] = useState<Formulario | null>(null)
 
   const linhas = formularios
     .filter((formulario) => formulario.equipeId === equipe.id)
@@ -406,9 +461,7 @@ export function EquipeFormularios() {
                         label: 'Excluir',
                         icon: 'delete',
                         destructive: true,
-                        onClick: () => {
-                          removerFormulario(formulario.id)
-                        },
+                        onClick: () => setFormularioExcluindo(formulario),
                       },
                     ]}
                   />
@@ -423,6 +476,18 @@ export function EquipeFormularios() {
         <EditarFormularioModal
           formulario={formularioEditando}
           onClose={() => setFormularioEditando(null)}
+        />
+      )}
+
+      {formularioExcluindo && (
+        <ExcluirModal
+          tipo="formulario"
+          nome={formularioExcluindo.titulo}
+          onClose={() => setFormularioExcluindo(null)}
+          onConfirmar={() => {
+            removerFormulario(formularioExcluindo.id)
+            setFormularioExcluindo(null)
+          }}
         />
       )}
     </>

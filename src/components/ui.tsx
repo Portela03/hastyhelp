@@ -158,6 +158,7 @@ export function ButtonBrown({ children, className, ...rest }: BtnProps) {
         'transition duration-100',
         'hover:bg-btn-brown-hover hover:shadow-btn-hover',
         'active:shadow-none',
+        'disabled:cursor-not-allowed disabled:border-transparent disabled:bg-[#eeeeee] disabled:text-[#888888] disabled:shadow-none disabled:hover:bg-[#eeeeee]',
         className,
       )}
     >
@@ -454,12 +455,16 @@ export function Modal({
   onClose,
   children,
   width = 480,
+  titleClassName,
+  className,
 }: {
   title: string
   icon: string
   onClose: () => void
   children: ReactNode
   width?: number
+  titleClassName?: string
+  className?: string
 }) {
   const ref = useRef<HTMLDivElement>(null)
   const titleId = useId()
@@ -485,9 +490,12 @@ export function Modal({
         aria-modal="true"
         aria-labelledby={titleId}
         style={{ maxWidth: width }}
-        className="my-auto flex w-full flex-col items-center gap-6 rounded-lg bg-white px-9 py-8"
+        className={cx(
+          'my-auto flex w-full flex-col items-center gap-6 rounded-lg bg-white px-9 py-8',
+          className,
+        )}      
       >
-        <h2 id={titleId} className="flex w-full items-center text-[22px] font-semibold text-ink">
+        <h2 id={titleId} className={cx( 'flex w-full items-center gap-1 text-[22px] font-semibold text-ink', titleClassName,)} >
           <Icon name={icon} round={false} />
           {title}
         </h2>

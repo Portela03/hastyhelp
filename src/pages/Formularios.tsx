@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 import { Navigate, Outlet, useNavigate, useOutletContext, useParams } from 'react-router-dom'
 import sortIcon from '../assets/figma/sort.svg'
 import { AppShell, Banner, DataTable, Section, TabBar, Toolbar } from '../components/layout'
-import { CriarFormularioModal, EditarFormularioModal } from '../components/modals'
+import { ExcluirModal, CriarFormularioModal, EditarFormularioModal } from '../components/modals'
 import { Avatar, ButtonPrimary, DifficultyLetter, FilterSelect, KpiCard, Panel, SearchBox, SortButton, StatusPill, TeamBadge, cx, OptionsMenu } from '../components/ui'
 import { DIFICULDADES_GERAIS, OBSERVACOES, PERIODOS } from '../data/mock'
 import type { Formulario, StatusFormulario } from '../data/mock'
@@ -121,9 +121,11 @@ const TITULO_DETALHE = 'Teste Algebra Linear - Média, mediana e moda'
 
 export function FormularioDetalhe() {
   const { id } = useParams()
+  const navigate = useNavigate()
   const { formularios, equipes, removerFormulario } = useStore()  
   const form = formularios.find((f) => f.id === id)
   const [editar, setEditar] = useState(false)
+  const [excluir, setExcluir] = useState(false)
   if (!form) return <Navigate to="/avaliacoes" replace />
   const equipe = equipes.find((e) => e.id === form.equipeId)
   const base = `/avaliacoes/${form.id}`
@@ -155,9 +157,7 @@ export function FormularioDetalhe() {
                 label: 'Excluir formulário',
                 icon: 'delete',
                 destructive: true,
-                onClick: () => {
-                  removerFormulario(form.id)
-                },
+                onClick: () => setExcluir(true),
               },
             ]}
           />
@@ -179,6 +179,18 @@ export function FormularioDetalhe() {
       />
       <Outlet context={form} />
       {editar && <EditarFormularioModal formulario={form} onClose={() => setEditar(false)} />}
+
+      {excluir && (
+        <ExcluirModal
+          tipo="formulario"
+          nome={form.titulo}
+          onClose={() => setExcluir(false)}
+          onConfirmar={() => {
+            removerFormulario(form.id)
+            navigate('/avaliacoes', { replace: true })
+          }}
+        />
+      )}
     </AppShell>
   )
 }

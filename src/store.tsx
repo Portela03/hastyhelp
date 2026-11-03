@@ -22,12 +22,14 @@ interface Store {
   atualizarEquipe: (id: string, dados: Partial<Equipe>) => void
   adicionarFormulario: (f: Formulario) => void
   atualizarFormulario: (id: string, dados: Partial<Formulario>) => void
+  removerEquipe: (id: string) => void
   autoavaliacoes: AutoavaliacaoAluno[]
   salvarResposta: (id: string, perguntaId: string, marcadas: number[]) => void
   enviarAutoavaliacao: (id: string) => void
   removerFormulario: (id: string) => void
   preferencias: PreferenciasPerfil
   atualizarPreferencias: (dados: Partial<PreferenciasPerfil>) => void
+  
 }
 
 const StoreContext = createContext<Store | null>(null)
@@ -93,11 +95,24 @@ export function StoreProvider({ children }: { children: ReactNode }) {
     (id: string, dados: Partial<Equipe>) => setEquipes((l) => l.map((e) => (e.id === id ? { ...e, ...dados } : e))),
     [],
   )
+
+  const removerEquipe = useCallback((id: string) => {
+    setEquipes((lista) =>
+      lista.filter((equipe) => equipe.id !== id),
+    )
+
+    setFormularios((lista) =>
+      lista.filter((formulario) => formulario.equipeId !== id),
+    )
+  }, [])
+
   const adicionarFormulario = useCallback((f: Formulario) => setFormularios((l) => [f, ...l]), [])
   const atualizarFormulario = useCallback(
     (id: string, dados: Partial<Formulario>) => setFormularios((l) => l.map((f) => (f.id === id ? { ...f, ...dados } : f))),
     [],
   )
+
+
   const removerFormulario = useCallback(
   (id: string) => {
     setFormularios((lista) =>
@@ -159,8 +174,9 @@ export function StoreProvider({ children }: { children: ReactNode }) {
       enviarAutoavaliacao,
       preferencias,
       atualizarPreferencias,
+      removerEquipe
     }),
-    [sessao, entrar, sair, equipes, formularios, adicionarEquipe, atualizarEquipe, adicionarFormulario, atualizarFormulario, autoavaliacoes, salvarResposta, enviarAutoavaliacao, preferencias, atualizarPreferencias],
+    [sessao, entrar, sair, equipes, formularios, adicionarEquipe, atualizarEquipe, adicionarFormulario, atualizarFormulario, autoavaliacoes, salvarResposta, enviarAutoavaliacao, preferencias, atualizarPreferencias, removerEquipe],
   )
   return <StoreContext.Provider value={value}>{children}</StoreContext.Provider>
 }

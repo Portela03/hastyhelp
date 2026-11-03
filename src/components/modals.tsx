@@ -556,3 +556,278 @@ export function PerfilModal({ onClose }: { onClose: () => void }) {
     </Modal>
   )
 }
+
+type ExcluirModalProps = {
+  tipo: 'equipe' | 'formulario'
+  nome: string
+  onClose: () => void
+  onConfirmar: () => void
+}
+
+export function ExcluirModal({
+  tipo,
+  nome,
+  onClose,
+  onConfirmar,
+}: ExcluirModalProps) {
+  const [confirmado, setConfirmado] = useState(false)
+
+  const ehEquipe = tipo === 'equipe'
+
+  function confirmar(e: FormEvent) {
+    e.preventDefault()
+
+    if (!confirmado) return
+
+    onConfirmar()
+  }
+
+  return (
+    <Modal
+      title="Excluir permanentemente"
+      icon="delete"
+      onClose={onClose}
+      width={640}
+      titleClassName="!text-diff-c !text-[22px] sm:!text-[26px]"
+    >
+      <form onSubmit={confirmar} className="flex w-full flex-col gap-7">
+        <p className="text-center text-[20px] leading-7 text-ink">
+          Você está prestes a excluir {ehEquipe ? 'a equipe' : 'o formulário'}{' '}
+          <strong>{nome}</strong>.
+          <br />
+          {ehEquipe
+            ? 'Todos os formulários, respostas de alunos e métricas associadas serão apagados.'
+            : 'Todas as respostas e métricas associadas serão apagadas.'}
+        </p>
+
+        <label className="flex cursor-pointer items-center gap-3 text-[18px] text-ink">
+          <input
+            type="checkbox"
+            checked={confirmado}
+            onChange={(e) => setConfirmado(e.target.checked)}
+            className="size-5 cursor-pointer accent-diff-c"
+          />
+
+          <span>
+            Sim, entendo que esta ação é irreversível.
+          </span>
+        </label>
+
+        <div className="flex w-full gap-3">
+        <ButtonBrown type="submit" disabled={!confirmado} className="bg-diff-c hover:bg-diff-c/80" >
+          Excluir
+        </ButtonBrown>
+
+          <ButtonGhost type="button" onClick={onClose}>
+            Cancelar
+          </ButtonGhost>
+        </div>
+      </form>
+    </Modal>
+  )
+}
+
+//Apagar função quanto tiver backend
+function gerarCodigoTurma() {
+  return String(Math.floor(10000 + Math.random() * 90000))
+}
+
+type AbaAdicionarMembros = 'codigo' | 'email'
+type TipoAcesso = 'manual' | 'direto'
+
+type ContaDisponivel = {
+  id: string
+  nome: string
+  email: string
+  iniciais: string
+  cor: string
+}
+
+const CONTAS_DISPONIVEIS: ContaDisponivel[] = [
+  { id: 'sarah-chen-1', nome: 'Sarah Chen', email: 'Sarah.Chen12@gmail.com', iniciais: 'SC', cor: '#a67b5b' },
+  { id: 'sarah-chen-2', nome: 'Sarah Chen', email: 'Sarah.Chen11@gmail.com', iniciais: 'SC', cor: '#15593c' },
+  { id: 'james-park', nome: 'James Park', email: 'James.Park@gmail.com', iniciais: 'JP', cor: '#3b82f6' },
+  { id: 'lisa-anderson', nome: 'Lisa Anderson', email: 'Lisa.Anderson@gmail.com', iniciais: 'LA', cor: '#8b5cf6' },
+]
+
+export function AdicionarMembrosModal({ onClose }: { onClose: () => void }) {
+  const [aba, setAba] = useState<AbaAdicionarMembros>('codigo')
+  const [tipoAcesso, setTipoAcesso] = useState<TipoAcesso>('manual')
+  const [busca, setBusca] = useState('')
+  const [contaSelecionada, setContaSelecionada] = useState<ContaDisponivel | null>(null)
+  const [copiado, setCopiado] = useState(false)
+
+  const [codigo] = useState(gerarCodigoTurma)
+  const termo = busca.trim().toLowerCase()
+  
+  const correspondencias = termo
+    ? CONTAS_DISPONIVEIS.filter((c) => c.nome.toLowerCase().includes(termo) || c.email.toLowerCase().includes(termo))
+    : []
+
+  async function copiarCodigo() {
+    await navigator.clipboard.writeText(codigo)
+    setCopiado(true)
+    setTimeout(() => setCopiado(false), 2000)
+  }
+
+  function mudarAba(novaAba: AbaAdicionarMembros) {
+    setAba(novaAba)
+    setBusca('')
+    setContaSelecionada(null)
+  }
+
+  return (
+    <Modal title="Convidar" icon="person_add" onClose={onClose} width={480} className="  sm:min-h-[530px]">
+      <div className="flex w-full flex-1 flex-col gap-6">
+        
+        {/* Abas */}
+        <div
+          role="radiogroup"
+          aria-label="Forma de adicionar membros"
+          className="relative flex items-center rounded-[9px] border border-placeholder bg-white "
+        >
+          <div className={cx(
+              'absolute top-0 left-0 h-full w-1/2 bg-btn-brown outline rounded-lg',
+              'transform duration-250 ease-in-out',
+              aba === 'codigo' ? 'translate-x-0' : 'translate-x-full',
+            )}
+          />
+
+          {(['codigo', 'email'] as const).map((tab) => (
+            <button
+              key={tab}
+              type="button"
+              role="radio"
+              aria-checked={aba === tab}
+              onClick={() => mudarAba(tab)}
+              className={cx(
+                'relative z-10 flex-1 cursor-pointer rounded-lg px-3 py-2 text-[16px] font-medium',
+                aba === tab ? 'text-ink' : 'text-muted',
+              )}
+            >
+              {tab === 'codigo' ? 'Código' : 'Email'}
+            </button>
+          ))}
+        </div>
+
+        {aba === 'codigo' ? (
+          
+          /* ABA CÓDIGO */
+          <form onSubmit={(e) => { e.preventDefault(); onClose(); }} className="flex w-full flex-col gap-6">
+            <div className="flex flex-col gap-3 text-[18px] text-muted">
+              <div className="flex w-full items-center gap-3">
+                <p className="shrink-0">
+                  1. Copie o código da turma:
+                </p>
+
+                <div className="flex flex-1 items-center justify-between rounded-lg border border-placeholder bg-white px-3 py-1.5 text-[20px] text-ink">
+                  <div className="pointer-events-none flex select-none items-center gap-1 opacity-0" aria-hidden="true">
+                    <Icon name="content_copy" className="text-[22px]" />
+                    {copiado}
+                  </div>
+
+                  <strong>{codigo}</strong>
+
+                  <button
+                    type="button"
+                    aria-label="Copiar código da turma"
+                    onClick={copiarCodigo}
+                    className="flex cursor-pointer items-center gap-1 text-muted transition hover:text-ink"
+                  >
+                    <Icon
+                      name={copiado ? 'check' : 'content_copy'}
+                      className="text-[22px]"
+                    />
+                  </button>
+                </div>
+              </div>
+
+              <p>
+                2. Compartilhe o código com seus alunos.
+              </p>
+
+              <p>
+                3. Peça para adicionarem a turma pelo botão{' '}
+                <strong>“Adicionar equipe”</strong>.
+              </p>
+            </div>
+
+            <SelectField
+              label="Aprovação de novos membros"
+              placeholder="Selecione a regra de acesso"
+              value={tipoAcesso}
+              onChange={(valor) => setTipoAcesso(valor as TipoAcesso)}
+              options={[
+                { value: 'manual', label: 'Confirmar as entradas manualmente' },
+                { value: 'direto', label: 'Entrada direta sem aprovação' },
+              ]}
+            />
+
+            <div className="flex w-full justify-center pt-2">
+              <ButtonBrown type="submit" className="w-[160px]">Concluir</ButtonBrown>
+            </div>
+          </form>
+
+        ) : (
+
+          /* ABA EMAIL (Live Search) */
+          <form onSubmit={(e) => { e.preventDefault(); if (contaSelecionada) onClose(); }} className="flex w-full flex-1 flex-col gap-2">
+            
+            <div className="relative flex w-full items-center">
+              <span className="absolute left-4 text-placeholder pointer-events-none">
+                <Icon name="search" className="text-[22px]" />
+              </span>
+              <input
+                type="search"
+                placeholder="Digite o email ou nome"
+                value={busca}
+                onChange={(e) => { setBusca(e.target.value); setContaSelecionada(null); }}
+                className="w-full rounded-lg border border-placeholder bg-white py-3 pl-12 pr-4 text-[16px] text-ink outline-none transition focus:border-ink"
+              />
+            </div>
+
+            {termo && (
+              <div className="flex max-h-[220px] w-full flex-col overflow-y-auto rounded-lg border border-line">
+                {correspondencias.length > 0 ? (
+                  correspondencias.map((conta) => {
+                    const selecionada = contaSelecionada?.id === conta.id
+                    return (
+                      <button
+                        key={conta.id}
+                        type="button"
+                        onClick={() => setContaSelecionada(conta)}
+                        className={cx(
+                          'flex w-full cursor-pointer items-center gap-4 border-b border-line-input px-3 py-3 text-left transition last:border-0',
+                          selecionada ? 'bg-btn' : 'bg-white hover:bg-btn'
+                        )}
+                      >
+                        <Avatar letra={conta.iniciais} cor={conta.cor} size={48} />
+                        <span className="flex min-w-0 flex-1 flex-col">
+                          <strong className="text-[16px] text-ink truncate">{conta.nome}</strong>
+                          <span className="text-[14px] text-muted truncate">{conta.email}</span>
+                        </span>
+                        {selecionada && <Icon name="check_circle" className="text-[24px] text-ok" />}
+                      </button>
+                    )
+                  })
+                ) : (
+                  <p className="py-8 text-center text-[16px] text-muted">Nenhuma conta encontrada.</p>
+                )}
+              </div>
+            )}
+
+            <div className="mt-auto flex w-full gap-3 pt-4">
+              <ButtonBrown type="submit" disabled={!contaSelecionada} className="flex-1 !transition-none" >
+                Convidar
+              </ButtonBrown>
+
+              <ButtonGhost type="button" onClick={onClose} className="flex-1">
+                Cancelar
+              </ButtonGhost>
+            </div>
+          </form>
+        )}
+      </div>
+    </Modal>
+  )
+}
