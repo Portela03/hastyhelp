@@ -7,6 +7,7 @@ import { ButtonBrown, ButtonGhost, Field, PasswordField, cx } from '../component
 import { CONVITES, TURMAS_ALUNO } from '../data/aluno'
 import type { Papel } from '../data/aluno'
 import { useStore } from '../store'
+import { aguardarRenderizacao } from '../utils'
 
 function AuthLayout({ titulo, children, voltarPara }: { titulo: string; children: ReactNode; voltarPara?: string }) {
   return (
@@ -22,16 +23,16 @@ function AuthLayout({ titulo, children, voltarPara }: { titulo: string; children
   )
 }
 
-function AuthButtons({ principal, alternativa, para }: { principal: string; alternativa: string; para: string }) {
+function AuthButtons({ principal, alternativa, para, loading = false }: { principal: string; alternativa: string; para: string; loading?: boolean }) {
   const navigate = useNavigate();
 
   return (
     <div className="flex w-full gap-3">
-      <ButtonBrown type="submit">
-        {principal}
+      <ButtonBrown type="submit" loading={loading}>
+        {loading ? 'Carregando...' : principal}
       </ButtonBrown>
 
-      <ButtonGhost onClick={() => navigate(para)}>
+      <ButtonGhost disabled={loading} onClick={() => navigate(para)}>
         {alternativa}
       </ButtonGhost>
     </div>
@@ -73,9 +74,13 @@ export function Login() {
   const [papel, setPapel] = useState<Papel>('professor')
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
+  const [carregando, setCarregando] = useState(false)
 
-  function enviar(e: FormEvent) {
+  async function enviar(e: FormEvent) {
     e.preventDefault()
+    if (carregando) return
+    setCarregando(true)
+    await aguardarRenderizacao()
     entrar(papel)
     navigate(papel === 'aluno' ? '/aluno/turmas' : '/equipes', { replace: true })
   }
@@ -95,7 +100,7 @@ export function Login() {
             </button>
           </div>
         </div>
-        <AuthButtons principal="Concluir" alternativa="Cadastrar" para="/cadastro" />
+        <AuthButtons principal="Concluir" alternativa="Cadastrar" para="/cadastro" loading={carregando} />
       </form>
     </AuthLayout>
   )
@@ -110,13 +115,17 @@ export function Cadastro({ convite }: { convite?: boolean }) {
   const [senha, setSenha] = useState('')
   const [confirma, setConfirma] = useState('')
   const [erro, setErro] = useState('')
+  const [carregando, setCarregando] = useState(false)
 
-  function enviar(e: FormEvent) {
+  async function enviar(e: FormEvent) {
     e.preventDefault()
     if (convite && !turma) return setErro('Peça um novo link de convite ao professor.')
     if (senha.length < 8) return setErro('A senha deve ter pelo menos 8 caracteres.')
     if (senha !== confirma) return setErro('As senhas não conferem.')
     setErro('')
+    if (carregando) return
+    setCarregando(true)
+    await aguardarRenderizacao()
     navigate('/login')
   }
 
@@ -144,7 +153,7 @@ export function Cadastro({ convite }: { convite?: boolean }) {
             </p>
           )}
         </div>
-        <AuthButtons principal="Cadastrar" alternativa="Login" para="/login" />
+        <AuthButtons principal="Cadastrar" alternativa="Login" para="/login" loading={carregando} />
       </form>
     </AuthLayout>
   )

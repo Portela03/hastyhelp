@@ -5,6 +5,7 @@ import { CORES_EQUIPE, PERIODOS } from '../data/mock'
 import type { Equipe, Formulario, Pergunta, StatusFormulario } from '../data/mock'
 import { useStore } from '../store'
 import { Avatar, ButtonBrown, ButtonGhost, Field, Icon, Modal, SelectField, StatusPill, TeamBadge, cx } from './ui'
+import { aguardarRenderizacao } from '../utils'
 
 export function gerarSigla(nome: string) {
   const palavras = nome
@@ -14,11 +15,11 @@ export function gerarSigla(nome: string) {
   return letras.toUpperCase()
 }
 
-function Acoes({ concluir, onClose }: { concluir: string; onClose: () => void }) {
+function Acoes({ concluir, onClose, loading = false }: { concluir: string; onClose: () => void; loading?: boolean }) {
   return (
     <div className="flex w-full gap-3">
-      <ButtonBrown type="submit">{concluir}</ButtonBrown>
-      <ButtonGhost onClick={onClose}>Cancelar</ButtonGhost>
+      <ButtonBrown type="submit" loading={loading}>{loading ? 'Carregando...' : concluir}</ButtonBrown>
+      <ButtonGhost disabled={loading} onClick={onClose}>Cancelar</ButtonGhost>
     </div>
   )
 }
@@ -32,10 +33,14 @@ export function CriarEquipeModal({ onClose }: { onClose: () => void }) {
   const [nome, setNome] = useState('')
   const [periodo, setPeriodo] = useState('')
   const [erro, setErro] = useState('')
+  const [carregando, setCarregando] = useState(false)
 
-  function enviar(e: FormEvent) {
+  async function enviar(e: FormEvent) {
     e.preventDefault()
     if (!nome.trim() || !periodo) return setErro('Informe o nome e o período letivo.')
+    if (carregando) return
+    setCarregando(true)
+    await aguardarRenderizacao()
     const equipe: Equipe = {
       id: `eq-${Date.now()}`,
       nome: nome.trim(),
@@ -72,7 +77,7 @@ export function CriarEquipeModal({ onClose }: { onClose: () => void }) {
             </p>
           )}
         </div>
-        <Acoes concluir="Concluir" onClose={onClose} />
+        <Acoes concluir="Concluir" onClose={onClose} loading={carregando} />
         <p className="text-center text-[16px] text-[#555]">
           Novos alunos podem ser adicionados acessando a aba 'Alunos' dentro da equipe ou enviando o link de convite
         </p>
@@ -87,9 +92,13 @@ export function EditarEquipeModal({ equipe, onClose }: { equipe: Equipe; onClose
   const [periodo, setPeriodo] = useState(equipe.periodo)
   const [sigla, setSigla] = useState(equipe.sigla)
   const [cor, setCor] = useState(equipe.cor)
+  const [carregando, setCarregando] = useState(false)
 
-  function enviar(e: FormEvent) {
+  async function enviar(e: FormEvent) {
     e.preventDefault()
+    if (carregando) return
+    setCarregando(true)
+    await aguardarRenderizacao()
     atualizarEquipe(equipe.id, { nome: nome.trim() || equipe.nome, periodo, sigla: sigla.trim().toUpperCase() || equipe.sigla, cor })
     onClose()
   }
@@ -122,7 +131,7 @@ export function EditarEquipeModal({ equipe, onClose }: { equipe: Equipe; onClose
             </div>
           </div>
         </div>
-        <Acoes concluir="Concluir" onClose={onClose} />
+        <Acoes concluir="Concluir" onClose={onClose} loading={carregando} />
       </form>
     </Modal>
   )
@@ -201,11 +210,15 @@ export function CriarFormularioModal({ onClose }: { onClose: () => void }) {
   const [postar, setPostar] = useState(false)
   const [perguntas, setPerguntas] = useState<Pergunta[]>([])
   const [erro, setErro] = useState('')
+  const [carregando, setCarregando] = useState(false)
   const equipe = equipes.find((e) => e.id === equipeId)
 
-  function enviar(e: FormEvent) {
+  async function enviar(e: FormEvent) {
     e.preventDefault()
     if (!nome.trim() || !equipe) return setErro('Informe o nome do formulário e a equipe.')
+    if (carregando) return
+    setCarregando(true)
+    await aguardarRenderizacao()
     const status: StatusFormulario = postar ? 'ativo' : data ? 'agendado' : 'rascunho'
     const form: Formulario = {
       id: `f-${Date.now()}`,
@@ -253,7 +266,7 @@ export function CriarFormularioModal({ onClose }: { onClose: () => void }) {
             </p>
           )}
         </div>
-        <Acoes concluir="Criar" onClose={onClose} />
+        <Acoes concluir="Criar" onClose={onClose} loading={carregando} />
       </form>
     </Modal>
   )
@@ -272,9 +285,13 @@ export function EditarFormularioModal({ formulario, onClose }: { formulario: For
   const [nome, setNome] = useState(formulario.titulo)
   const [status, setStatus] = useState<StatusFormulario>(formulario.status)
   const [perguntas, setPerguntas] = useState<Pergunta[]>(formulario.perguntas)
+  const [carregando, setCarregando] = useState(false)
 
-  function enviar(e: FormEvent) {
+  async function enviar(e: FormEvent) {
     e.preventDefault()
+    if (carregando) return
+    setCarregando(true)
+    await aguardarRenderizacao()
     atualizarFormulario(formulario.id, {
       titulo: nome.trim() || formulario.titulo,
       status,
@@ -306,7 +323,7 @@ export function EditarFormularioModal({ formulario, onClose }: { formulario: For
           </div>
           <PerguntasEditor perguntas={perguntas} onChange={setPerguntas} />
         </div>
-        <Acoes concluir="Concluir" onClose={onClose} />
+        <Acoes concluir="Concluir" onClose={onClose} loading={carregando} />
       </form>
     </Modal>
   )
