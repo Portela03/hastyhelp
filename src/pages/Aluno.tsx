@@ -31,6 +31,7 @@ import {
 import type { AutoavaliacaoAluno } from '../data/aluno'
 import { PERIODOS } from '../data/mock'
 import type { Dificuldade, Equipe, Pergunta } from '../data/mock'
+import { aguardarRenderizacao } from '../utils'
 import { useStore } from '../store'
 
 /* Auxiliares */
@@ -507,9 +508,13 @@ function Responder({ a }: { a: AutoavaliacaoAluno }) {
   const navigate = useNavigate()
   const [etapa, setEtapa] = useState<'responder' | 'revisar'>('responder')
   const [confirmar, setConfirmar] = useState(false)
+  const [carregando, setCarregando] = useState(false)
   const pronta = completa(a)
 
-  function enviar() {
+  async function enviar() {
+    if (carregando) return
+    setCarregando(true)
+    await aguardarRenderizacao()
     enviarAutoavaliacao(a.id)
     setConfirmar(false)
     navigate(`/aluno/autoavaliacoes/${a.id}/resultado`)
@@ -556,8 +561,10 @@ function Responder({ a }: { a: AutoavaliacaoAluno }) {
               Depois de enviadas, as respostas não poderão ser alteradas. Deseja enviar agora?
             </p>
             <div className="flex w-full gap-3">
-              <ButtonBrown onClick={enviar}>Enviar</ButtonBrown>
-              <ButtonGhost onClick={() => setConfirmar(false)}>Cancelar</ButtonGhost>
+              <ButtonBrown loading={carregando} onClick={enviar}>
+                {carregando ? 'Enviando...' : 'Enviar'}
+              </ButtonBrown>
+              <ButtonGhost disabled={carregando} onClick={() => setConfirmar(false)}>Cancelar</ButtonGhost>
             </div>
           </Modal>
         )}

@@ -127,7 +127,7 @@ export function OptionsMenu({ label, items, className }: OptionsMenuProps) {
 
 /* Botões */
 
-type BtnProps = ButtonHTMLAttributes<HTMLButtonElement> & { icon?: string; iconRound?: boolean }
+type BtnProps = ButtonHTMLAttributes<HTMLButtonElement> & { icon?: string; iconRound?: boolean; loading?: boolean }
 
 export function ButtonPrimary({ icon, iconRound = true, children, className, ...rest }: BtnProps) {
   return (
@@ -148,19 +148,23 @@ export function ButtonPrimary({ icon, iconRound = true, children, className, ...
   )
 }
 
-export function ButtonBrown({ children, className, ...rest }: BtnProps) {
+export function ButtonBrown({ children, className, loading = false, disabled, ...rest }: BtnProps) {
   return (
     <button
       type="button"
+      aria-busy={loading}
+      disabled={loading || disabled}
       {...rest}
       className={cx(
         'flex min-w-0 flex-1 cursor-pointer items-center justify-center gap-1 rounded-lg border border-ink bg-btn-brown px-3 py-1 text-[20px] font-medium text-ink shadow-btn',
         'transition duration-100',
         'hover:bg-btn-brown-hover hover:shadow-btn-hover',
         'active:shadow-none',
+        (loading || disabled) && 'cursor-wait opacity-70',
         className,
       )}
     >
+      {loading && <span aria-hidden className="size-4 animate-spin rounded-full border-2 border-current border-r-transparent" />}
       {children}
     </button>
   )
